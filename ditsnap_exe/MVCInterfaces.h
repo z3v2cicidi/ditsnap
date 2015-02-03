@@ -1,30 +1,37 @@
 #pragma once
 
-// Defined in MainFrm.h
 class CMainFrame;
 
 class ITableObserver
 {
 public:
-	virtual ~ITableObserver() {};
+	virtual ~ITableObserver()
+	{
+	};
+
 	virtual void UpdateTable() = 0;
 };
 
 class IDbObserver
 {
 public:
-	virtual ~IDbObserver() {};
+	virtual ~IDbObserver()
+	{
+	};
+
 	virtual void UpdateDb() = 0;
 };
 
 class ITableModel
 {
 public:
-	virtual ~ITableModel() {};
+	virtual ~ITableModel()
+	{
+	};
 
 	virtual void RegisterTableObserver(ITableObserver* o) = 0;
 	virtual void RemoveTableObserver(ITableObserver* o) = 0;
-	virtual void NotifyTableObservers() = 0;	
+	virtual void NotifyTableObservers() = 0;
 
 	virtual void RegisterDbObserver(IDbObserver* o) = 0;
 	virtual void RemoveDbObserver(IDbObserver* o) = 0;
@@ -39,7 +46,7 @@ public:
 	virtual BOOL MoveNextRecord() = 0;
 	virtual void Move(uint rowIndex) = 0;
 	virtual wstring RetrieveColumnDataAsString(uint columnIndex, uint itagSequence = 1) = 0;
-	virtual	uint GetColumnCount() const = 0;
+	virtual uint GetColumnCount() const = 0;
 	virtual wstring GetColumnName(uint columnIndex) const = 0;
 	virtual int CountColumnValue(uint columnIndex) const = 0;
 };
@@ -47,12 +54,12 @@ public:
 class ITableController
 {
 public:
-	virtual ~ITableController() {};
+	virtual ~ITableController()
+	{
+	};
+
 	virtual void OpenTable(wstring name) = 0;
 	virtual void SetTable(wstring name) = 0;
 	virtual void ClearTable() = 0;
 	virtual CMainFrame* GetView() = 0;
 };
-
-
-

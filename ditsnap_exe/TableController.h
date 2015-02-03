@@ -8,12 +8,11 @@ public:
 	CTableController(ITableModel* tableModel);
 	~CTableController(void);
 
-	// ITableController Interface
-	void OpenTable(wstring name);
-	void SetTable(wstring name);
-	void ClearTable();
-	CMainFrame* GetView();
-	
+	virtual void OpenTable(wstring name) override;
+	virtual void SetTable(wstring name) override;
+	virtual void ClearTable() override;
+	virtual CMainFrame* GetView() override;
+
 private:
 	CMainFrame* view_;
 	ITableModel* tableModel_;

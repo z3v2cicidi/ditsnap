@@ -1,13 +1,13 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ditsnap_exe", "ditsnap_exe\ditsnap_exe.vcproj", "{0CCA7D39-FBE8-4FA9-97AE-836443A4439A}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ditsnap_exe", "ditsnap_exe\ditsnap_exe.vcxproj", "{0CCA7D39-FBE8-4FA9-97AE-836443A4439A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VssCopy", "VssCopy\VssCopy.vcproj", "{CB0FCAF0-5122-4084-BF97-B5E496FC29DF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VssCopy", "VssCopy\VssCopy.vcxproj", "{CB0FCAF0-5122-4084-BF97-B5E496FC29DF}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EseDataAccess", "EseDataAccess\EseDataAccess.vcproj", "{E21835C9-B233-489A-BAD3-C8D071E0EA95}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "Common\Common.vcproj", "{7F619133-0275-4FCA-838A-89ACAEFC8B76}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EseDataAccess", "EseDataAccess\EseDataAccess.vcxproj", "{E21835C9-B233-489A-BAD3-C8D071E0EA95}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,10 +27,6 @@ Global
 		{E21835C9-B233-489A-BAD3-C8D071E0EA95}.Debug|Win32.Build.0 = Debug|Win32
 		{E21835C9-B233-489A-BAD3-C8D071E0EA95}.Release|Win32.ActiveCfg = Release|Win32
 		{E21835C9-B233-489A-BAD3-C8D071E0EA95}.Release|Win32.Build.0 = Release|Win32
-		{7F619133-0275-4FCA-838A-89ACAEFC8B76}.Debug|Win32.ActiveCfg = Debug|Win32
-		{7F619133-0275-4FCA-838A-89ACAEFC8B76}.Debug|Win32.Build.0 = Debug|Win32
-		{7F619133-0275-4FCA-838A-89ACAEFC8B76}.Release|Win32.ActiveCfg = Release|Win32
-		{7F619133-0275-4FCA-838A-89ACAEFC8B76}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -13,21 +13,21 @@ namespace EseDataAccess
 class CDbTreeView : public CWindowImpl<CDbTreeView, CTreeViewCtrl>, IDbObserver
 {
 public:
-	DECLARE_WND_SUPERCLASS(NULL, CTreeViewCtrl::GetWndClassName())
-	BOOL PreTranslateMessage(MSG* pMsg){ return FALSE;}
-    BEGIN_MSG_MAP(CDbTreeView)
-        //MSG_WM_CREATE(OnCreate)
-        REFLECTED_NOTIFY_CODE_HANDLER_EX(NM_DBLCLK, OnTreeDblClick)
-        DEFAULT_REFLECTION_HANDLER()
-    END_MSG_MAP()
+	DECLARE_WND_SUPERCLASS(nullptr, CTreeViewCtrl::GetWndClassName())
+
+	BOOL PreTranslateMessage(MSG* pMsg);
+
+	BEGIN_MSG_MAP(CDbTreeView)
+		REFLECTED_NOTIFY_CODE_HANDLER_EX(NM_DBLCLK, OnTreeDblClick)
+		DEFAULT_REFLECTION_HANDLER()
+		END_MSG_MAP()
 
 	CDbTreeView(ITableController* tableController, ITableModel* tableModel);
 	~CDbTreeView(void);
 
 	LRESULT OnTreeDblClick(LPNMHDR pnmh);
 
-	//IDbObserver Interface
-	void UpdateDb();
+	virtual void UpdateDb() override;
 
 private:
 	ITableController* tableController_;

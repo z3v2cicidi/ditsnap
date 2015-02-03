@@ -1,20 +1,23 @@
 #include "stdafx.h"
 #include "FilterDialog.h"
+#include "resource.h"
 
 CFilterDialog::CFilterDialog(CTableListView* mainListView)
-	: mainListView_(mainListView){};
+	: mainListView_(mainListView)
+{
+};
 
 BOOL CFilterDialog::OnInitDialog(CWindow wndFocus, LPARAM lInitParam)
 {
-    CenterWindow();
+	CenterWindow();
 
-    HICON hIcon = AtlLoadIconImage(IDR_MAINFRAME, LR_DEFAULTCOLOR,
-        ::GetSystemMetrics(SM_CXICON), ::GetSystemMetrics(SM_CYICON));
-    SetIcon(hIcon, TRUE);
-    
-    HICON hIconSmall = AtlLoadIconImage(IDR_MAINFRAME, LR_DEFAULTCOLOR,
-        ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON));
-    SetIcon(hIconSmall, FALSE);
+	HICON hIcon = AtlLoadIconImage(IDR_MAINFRAME, LR_DEFAULTCOLOR,
+	                               GetSystemMetrics(SM_CXICON), GetSystemMetrics(SM_CYICON));
+	SetIcon(hIcon, TRUE);
+
+	HICON hIconSmall = AtlLoadIconImage(IDR_MAINFRAME, LR_DEFAULTCOLOR,
+	                                    GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON));
+	SetIcon(hIconSmall, FALSE);
 
 	checkBoxClassSchema_ = GetDlgItem(IDC_CHECK1);
 	checkBoxAttributeSchema_ = GetDlgItem(IDC_CHECK2);
@@ -28,7 +31,7 @@ BOOL CFilterDialog::OnInitDialog(CWindow wndFocus, LPARAM lInitParam)
 	checkBoxDisplaySpecifier_.SetCheck(BST_CHECKED);
 	checkBoxOthers_.SetCheck(BST_CHECKED);
 
-    return TRUE;
+	return TRUE;
 }
 
 void CFilterDialog::OnOK(UINT uNotifyCode, int nID, CWindow wndCtl)
@@ -40,11 +43,11 @@ void CFilterDialog::OnOK(UINT uNotifyCode, int nID, CWindow wndCtl)
 	filterFlag += checkBoxOthers_.GetCheck() << 4;
 
 	mainListView_->FilterTable(filterFlag);
-    EndDialog(nID);
+	EndDialog(nID);
 	return;
 }
 
 void CFilterDialog::OnCancel(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
-    EndDialog(nID);
+	EndDialog(nID);
 }

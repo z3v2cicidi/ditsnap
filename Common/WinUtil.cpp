@@ -1,47 +1,47 @@
 #include "stdafx.h"
 #include "WinUtil.h"
 
-namespace WinUtil {
-
-WinVersion GetWinVersion() 
+namespace WinUtil
 {
-	static bool checkedVersion = false;
-	static WinVersion winVersion = WINVERSION_PRE_2000;
-	if (!checkedVersion) 
+	WinVersion GetWinVersion()
 	{
-		OSVERSIONINFOEX versionInfo;
-		versionInfo.dwOSVersionInfoSize = sizeof versionInfo;
-		::GetVersionEx(reinterpret_cast<OSVERSIONINFO*>(&versionInfo));
-		if (versionInfo.dwMajorVersion == 5) 
+		static bool checkedVersion = false;
+		static WinVersion winVersion = WINVERSION_PRE_2000;
+		if (!checkedVersion)
 		{
-			switch (versionInfo.dwMinorVersion) 
+			OSVERSIONINFOEX versionInfo;
+			versionInfo.dwOSVersionInfoSize = sizeof versionInfo;
+			::GetVersionEx(reinterpret_cast<OSVERSIONINFO*>(&versionInfo));
+			if (versionInfo.dwMajorVersion == 5)
 			{
-			case 0:
-				winVersion = WINVERSION_2000;
-				break;
-			case 1:
-				winVersion = WINVERSION_XP;
-				break;
-			case 2:
-			default:
-				winVersion = WINVERSION_SERVER_2003;
-				break;
+				switch (versionInfo.dwMinorVersion)
+				{
+				case 0:
+					winVersion = WINVERSION_2000;
+					break;
+				case 1:
+					winVersion = WINVERSION_XP;
+					break;
+				case 2:
+				default:
+					winVersion = WINVERSION_SERVER_2003;
+					break;
+				}
 			}
-		} 
-		else if (versionInfo.dwMajorVersion >= 6) 
-		{
-			if (versionInfo.wProductType == VER_NT_WORKSTATION)
+			else if (versionInfo.dwMajorVersion >= 6)
 			{
-				winVersion = WINVERSION_VISTA; 
+				if (versionInfo.wProductType == VER_NT_WORKSTATION)
+				{
+					winVersion = WINVERSION_VISTA;
+				}
+				else
+				{
+					winVersion = WINVERSION_SERVER_2008;
+				}
 			}
-			else
-			{
-				winVersion = WINVERSION_SERVER_2008;
-			}
+			checkedVersion = true;
 		}
-		checkedVersion = true;
+		return winVersion;
 	}
-	return winVersion;
-}
+} // namespace WinUtil
 
-}  // namespace WinUtil

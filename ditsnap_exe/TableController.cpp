@@ -1,10 +1,9 @@
 #include "StdAfx.h"
 #include "TableController.h"
-#include "TableModel.h"
 #include "MainFrm.h"
 
-CTableController::CTableController(ITableModel* tableModel) 
-	:  tableModel_(tableModel)
+CTableController::CTableController(ITableModel* tableModel)
+	: tableModel_(tableModel)
 {
 	view_ = new CMainFrame(this, tableModel_);
 }
@@ -33,4 +32,3 @@ CMainFrame* CTableController::GetView()
 {
 	return view_;
 }
-

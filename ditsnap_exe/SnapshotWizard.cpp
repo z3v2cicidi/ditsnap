@@ -7,30 +7,31 @@ using std::string;
 using std::wstring;
 using std::map;
 
-BOOL CSnapshotWizardPage1::OnInitDialog(CWindow wndFocus, LPARAM lInitParam){
-	sourceEdit_ = GetDlgItem(IDC_SOURCE_EDIT);		
+BOOL CSnapshotWizardPage1::OnInitDialog(CWindow wndFocus, LPARAM lInitParam)
+{
+	sourceEdit_ = GetDlgItem(IDC_SOURCE_EDIT);
 	destinationEdit_ = GetDlgItem(IDC_DEST_EDIT);
 
 	sourceEdit_.SetWindowTextW(L"%systemroot%\\NTDS\\ntds.dit");
 	wchar_t destinationPath[MAX_PATH];
-	if (::GetModuleFileName(NULL, destinationPath, MAX_PATH))
+	if (::GetModuleFileName(nullptr, destinationPath, MAX_PATH))
 	{
 		CPath tempPath(destinationPath);
 		tempPath.RemoveFileSpec();
 		tempPath.Append(L"\\ntdsSnapshot.dit");
-		destinationEdit_.SetWindowTextW( (const wchar_t*) tempPath );
+		destinationEdit_.SetWindowTextW((const wchar_t*) tempPath);
 	}
-    return TRUE;
+	return TRUE;
 }
 
 LRESULT CSnapshotWizardPage1::OnWizardNext()
 {
-	CAutoPtr<wchar_t> sourcePath( new wchar_t[sourceEdit_.GetWindowTextLengthW() + 1] );
+	CAutoPtr<wchar_t> sourcePath(new wchar_t[sourceEdit_.GetWindowTextLengthW() + 1]);
 	sourceEdit_.GetWindowTextW(sourcePath, sourceEdit_.GetWindowTextLengthW() + 1);
-	
-	CAutoPtr<wchar_t> destinationPath( new wchar_t[destinationEdit_.GetWindowTextLengthW() + 1] );
+
+	CAutoPtr<wchar_t> destinationPath(new wchar_t[destinationEdit_.GetWindowTextLengthW() + 1]);
 	destinationEdit_.GetWindowTextW(destinationPath, destinationEdit_.GetWindowTextLengthW() + 1);
-	
+
 	wchar_t expandedSourcePath[MAX_PATH];
 	wchar_t expandedDestinationPath[MAX_PATH];
 	if (0 == ::ExpandEnvironmentStrings(sourcePath, expandedSourcePath, MAX_PATH))
@@ -48,29 +49,27 @@ LRESULT CSnapshotWizardPage1::OnWizardNext()
 	{
 		MessageBox(L"The source file does not exists.", L"Error");
 		return -1;
-	}	
+	}
 	if (ATLPath::FileExists(expandedDestinationPath))
 	{
 		MessageBox(L"The Destination file already exists.", L"Error");
 		return -1;
 	}
 	
-	CWaitCursor cursor;
-
 	HRESULT hr = Vss::CopyFileFromSnapshot(sourcePath, destinationPath);
 	if (FAILED(hr))
 	{
 		CString errorMessage;
 		errorMessage.Format(L"%s : %d", L"Vss copy Failed.", hr);
-		MessageBox( errorMessage );
+		MessageBox(errorMessage);
 		return -1;
 	}
 
 	if (!InvokeEsentutilP(destinationPath))
 	{
 		CString errorMessage;
-		errorMessage.Format(L"%s : %d", L"Database repair Failed. : ", ::GetLastError());
-		MessageBox( errorMessage );
+		errorMessage.Format(L"%s : %d", L"Database repair Failed. : ", GetLastError());
+		MessageBox(errorMessage);
 		return -1;
 	}
 
@@ -86,40 +85,40 @@ BOOL CSnapshotWizardPage1::InvokeEsentutilP(const wchar_t* targetDbPath)
 	ZeroMemory( &si, sizeof( si ) );
 	si.cb = sizeof( si );
 	ZeroMemory( &pi, sizeof( pi ) );
-    
+
 	wchar_t* esentutilCommand = L"\"%systemroot%\\system32\\esentutl.exe\" /p /8 /o ";
 	wchar_t eseutilCommandWithDbPath[MAX_PATH * 2 + 4];
 	swprintf_s(eseutilCommandWithDbPath, MAX_PATH * 2 + 4, L"%s\"%s\"", esentutilCommand, targetDbPath);
 	wchar_t expandedCmdLine[MAX_PATH * 2 + 4];
-	::ExpandEnvironmentStrings(eseutilCommandWithDbPath, expandedCmdLine, MAX_PATH * 2 + 4); 
+	::ExpandEnvironmentStrings(eseutilCommandWithDbPath, expandedCmdLine, MAX_PATH * 2 + 4);
 
-	if (!::CreateProcess(NULL, expandedCmdLine, NULL, NULL, FALSE,            
-					  CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi ) ) 
+	if (!::CreateProcess(nullptr, expandedCmdLine, nullptr, nullptr, FALSE,
+	                         CREATE_NEW_CONSOLE, nullptr, nullptr, &si, &pi))
 	{
 		return FALSE;
 	}
 
 	// Wait until child process exits.
-	::WaitForSingleObject( pi.hProcess, INFINITE );
+	WaitForSingleObject(pi.hProcess, INFINITE);
 
 	// Close process and thread handles. 
-	::CloseHandle( pi.hProcess );
-	::CloseHandle( pi.hThread );
+	CloseHandle(pi.hProcess);
+	CloseHandle(pi.hThread);
 	return TRUE;
 }
 
 BOOL CSnapshotWizardPage2::OnSetActive()
 {
-    SetWizardButtons(PSWIZB_BACK | PSWIZB_FINISH);
-    return TRUE;
+	SetWizardButtons(PSWIZB_BACK | PSWIZB_FINISH);
+	return TRUE;
 }
 
-CSnapshotWizard::CSnapshotWizard(ATL::_U_STRINGorID title, UINT uStartPage, HWND hWndParent)
-    : CPropertySheetImpl<CSnapshotWizard>(title, uStartPage, hWndParent), sharedString_(new wchar_t[MAX_PATH + 1])
+CSnapshotWizard::CSnapshotWizard(_U_STRINGorID title, UINT uStartPage, HWND hWndParent)
+	: CPropertySheetImpl<CSnapshotWizard>(title, uStartPage, hWndParent), sharedString_(new wchar_t[MAX_PATH + 1])
 {
-    SetWizardMode();  
-    AddPage(page1_);
-    AddPage(page2_);
+	SetWizardMode();
+	AddPage(page1_);
+	AddPage(page2_);
 	page1_.SetSharedString(sharedString_);
 	page2_.SetSharedString(sharedString_);
 }

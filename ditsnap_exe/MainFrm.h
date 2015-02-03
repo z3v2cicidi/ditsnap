@@ -1,7 +1,3 @@
-// MainFrm.h : interface of the CMainFrame class
-//
-/////////////////////////////////////////////////////////////////////////////
-
 #pragma once
 #include "resource.h"
 #include "TableListView.h"
@@ -9,19 +5,24 @@
 #include "MVCInterfaces.h"
 
 class CMainFrame : public CFrameWindowImpl<CMainFrame>, public CUpdateUI<CMainFrame>,
-		public CMessageFilter, public CIdleHandler
+                   public CMessageFilter, public CIdleHandler
 {
 public:
-	DECLARE_FRAME_WND_CLASS(NULL, IDR_MAINFRAME)
-	virtual BOOL PreTranslateMessage(MSG* pMsg)
+	DECLARE_FRAME_WND_CLASS(nullptr, IDR_MAINFRAME)
+
+	virtual BOOL PreTranslateMessage(MSG* pMsg) override
 	{
 		return CFrameWindowImpl<CMainFrame>::PreTranslateMessage(pMsg);
 	}
-	virtual BOOL OnIdle() { return FALSE; }
+
+	virtual BOOL OnIdle() override
+	{
+		return FALSE;
+	}
 
 	BEGIN_UPDATE_UI_MAP(CMainFrame)
 		UPDATE_ELEMENT(ID_VIEW_STATUS_BAR, UPDUI_MENUPOPUP)
-	END_UPDATE_UI_MAP()
+		END_UPDATE_UI_MAP()
 
 	BEGIN_MSG_MAP(CMainFrame)
 		MESSAGE_HANDLER(WM_CREATE, OnCreate)
@@ -34,12 +35,12 @@ public:
 		COMMAND_ID_HANDLER(ID_TOOL_FILTER, OnToolFilter)
 		CHAIN_MSG_MAP(CUpdateUI<CMainFrame>)
 		CHAIN_MSG_MAP(CFrameWindowImpl<CMainFrame>)
-		CHAIN_CLIENT_COMMANDS()    // Command chains views
-        REFLECT_NOTIFICATIONS()    // Message Reflection
-	END_MSG_MAP()
+		CHAIN_CLIENT_COMMANDS() // Command chains views
+		REFLECT_NOTIFICATIONS() // Message Reflection
+		END_MSG_MAP()
 
 	CMainFrame(ITableController* tableController, ITableModel* tableModel);
-	~CMainFrame();
+	virtual ~CMainFrame() override;
 
 	LRESULT OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled);

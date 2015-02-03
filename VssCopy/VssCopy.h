@@ -4,34 +4,43 @@
 
 namespace Vss
 {
+	class VssCopy
+	{
+	public:
+		VssCopy(const wchar_t* sourcePath, const wchar_t* destinationPath) :
+			sourcePath_(sourcePath), destinationPath_(destinationPath), snapshotDeviceObject_(nullptr),
+			snapshotProperties_(nullptr), backupState_(FALSE)
+		{
+		};
 
-class VssCopy
-{
-public:
-	VssCopy(const wchar_t* sourcePath, const wchar_t* destinationPath) : 
-	  sourcePath_(sourcePath), destinationPath_(destinationPath), snapshotDeviceObject_(NULL), 
-	  snapshotProperties_(NULL), backupState_(FALSE) {};
-	~VssCopy();
-	
-	//Call this order
-	void Init();
-	void CopyFileFromSnapshot();
+		~VssCopy();
 
-	//Accessors
-	const wchar_t* GetSourcePath(){ return sourcePath_; };
-	const wchar_t* GetDestinationPath(){ return destinationPath_; };
+		//Call this order
+		void Init();
+		void CopyFileFromSnapshot();
 
-private:
-	const wchar_t* sourcePath_;
-	const wchar_t* destinationPath_;
-	ATL::CComPtr<IVssBackupComponents> pBackupComponents_;
-	wchar_t* snapshotDeviceObject_;
-	VSS_SNAPSHOT_PROP* snapshotProperties_;
-	bool backupState_;
+		//Accessors
+		const wchar_t* GetSourcePath()
+		{
+			return sourcePath_;
+		};
 
-	void WaitAndQueryStatus(ATL::CComPtr<IVssAsync> pVssAsync);
-};
+		const wchar_t* GetDestinationPath()
+		{
+			return destinationPath_;
+		};
 
-HRESULT CopyFileFromSnapshot(const wchar_t* sourcePath, const wchar_t* destinationPath);
+	private:
+		const wchar_t* sourcePath_;
+		const wchar_t* destinationPath_;
+		CComPtr<IVssBackupComponents> pBackupComponents_;
+		wchar_t* snapshotDeviceObject_;
+		VSS_SNAPSHOT_PROP* snapshotProperties_;
+		bool backupState_;
 
+		void WaitAndQueryStatus(CComPtr<IVssAsync> pVssAsync);
+	};
+
+	HRESULT CopyFileFromSnapshot(const wchar_t* sourcePath, const wchar_t* destinationPath);
 }// namespace
+

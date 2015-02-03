@@ -4,10 +4,10 @@
 
 using namespace EseDataAccess;
 
-CTableModel::CTableModel() 
-	: eseInstance_(NULL), 
-	  eseDatabase_(NULL), 
-	  eseTable_(NULL) 
+CTableModel::CTableModel()
+	: eseInstance_(nullptr),
+	  eseDatabase_(nullptr),
+	  eseTable_(nullptr)
 {
 }
 
@@ -29,7 +29,7 @@ void CTableModel::RemoveTableObserver(ITableObserver* o)
 void CTableModel::NotifyTableObservers()
 {
 	for (list<ITableObserver*>::iterator p = tableObservers_.begin();
-		p != tableObservers_.end(); ++p)
+	     p != tableObservers_.end(); ++p)
 	{
 		(*p)->UpdateTable();
 	}
@@ -48,7 +48,7 @@ void CTableModel::RemoveDbObserver(IDbObserver* o)
 void CTableModel::NotifyDbObservers()
 {
 	for (list<IDbObserver*>::iterator p = tableNameObservers_.begin();
-		p != tableNameObservers_.end(); ++p)
+	     p != tableNameObservers_.end(); ++p)
 	{
 		(*p)->UpdateDb();
 	}
@@ -125,9 +125,9 @@ int CTableModel::CountColumnValue(uint columnIndex) const
 void CTableModel::CleanupEse()
 {
 	delete eseInstance_;
-	eseInstance_ = NULL;
+	eseInstance_ = nullptr;
 	delete eseDatabase_;
-	eseDatabase_ = NULL;
+	eseDatabase_ = nullptr;
 	delete eseTable_;
-	eseTable_ = NULL;
+	eseTable_ = nullptr;
 }
