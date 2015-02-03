@@ -276,20 +276,22 @@ namespace EseDataAccess
 	void* EseTable::RetrieveColumnData(uint columnIndex, uint itagSequence, uint* pDataSizeInByte)
 	{
 		unsigned long actualSize = 0;
-		JET_RETINFO retInfo = {0};
+		JET_RETINFO retInfo = { 0 };
 		retInfo.cbStruct = sizeof(JET_RETINFO);
 		retInfo.itagSequence = itagSequence;
 
+		JET_ERR error = ::JetRetrieveColumn(sessionId_, tableId_, columns_[columnIndex]->GetId(),
+			NULL, 0, &actualSize, 0, &retInfo);
 		if (NULL == actualSize)
 		{
 			*pDataSizeInByte = actualSize;
-			return nullptr;
+			return NULL;
 		}
 
 		//adding sizeof(wchar_t) for not-null-terminated string
 		void* pvData = new BYTE[actualSize + sizeof(wchar_t)];
-		JET_ERR error = JetRetrieveColumn(sessionId_, tableId_, columns_[columnIndex]->GetId(),
-		                            pvData, actualSize + sizeof(wchar_t), nullptr, 0, &retInfo);
+		error = ::JetRetrieveColumn(sessionId_, tableId_, columns_[columnIndex]->GetId(),
+			pvData, actualSize + sizeof(wchar_t), 0, 0, &retInfo);
 		if (JET_errSuccess != error)
 		{
 			delete[] pvData;
@@ -321,7 +323,7 @@ namespace EseDataAccess
 		const uint maxBufferSize = 1024 * 16;
 		wchar_t* returnString = new wchar_t[bufferSize / sizeof(wchar_t)];
 		uint dataSize = 0;
-		void* pvData = nullptr;
+		void* pvData = NULL;
 		int error = E_FAIL;
 
 		try
@@ -527,18 +529,18 @@ namespace EseDataAccess
 	wstring EseException::GetErrorMessage()
 	{
 		wstring errorMessage;
-		wchar_t* pTemp = nullptr;
+		wchar_t* pTemp = NULL;
 
 		int nLen = ::FormatMessage(
 			FORMAT_MESSAGE_ALLOCATE_BUFFER |
 			                              FORMAT_MESSAGE_IGNORE_INSERTS |
 			                              FORMAT_MESSAGE_FROM_SYSTEM,
-			                              nullptr,
+			                              NULL,
 			                              err_,
 			                              MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ),
 			                              reinterpret_cast<LPWSTR>(&pTemp),
 			                              1,
-			                              nullptr);
+			                              NULL);
 
 		if (0 != nLen && NULL != pTemp)
 		{

@@ -9,7 +9,6 @@ namespace EseDataAccess
 	class EseInstance;
 }
 
-
 class CDbTreeView : public CWindowImpl<CDbTreeView, CTreeViewCtrl>, IDbObserver
 {
 public:
