@@ -1,5 +1,5 @@
 #Dit Snapshot Viewer
-Dit Snapshot Viewer is an inspection tool for Active Directory database. This tool reads ntds.dit file and visualize it for troubleshooting.
+DIT Snapshot Viewer is an inspection tool for Active Directory database, ntds.dit. This tool accesses to ESE (Extensible Storage Engine) by [ESE C API](https://msdn.microsoft.com/en-us/library/gg269259%28v=exchg.10%29.aspx).
 ##Main Window
 ![screenshot1](https://raw.githubusercontent.com/yosqueoy/ditsnap/master/images/screenshot1.png)
 ##Detail Dialog
