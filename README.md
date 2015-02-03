@@ -4,3 +4,6 @@ DIT Snapshot Viewer is an inspection tool for Active Directory database, ntds.di
 ![screenshot1](https://raw.githubusercontent.com/yosqueoy/ditsnap/master/images/screenshot1.png)
 ##Detail Dialog
 ![screenshot2](https://raw.githubusercontent.com/yosqueoy/ditsnap/master/images/screenshot2.png)
+
+##Build Environment
+Visual C++ 2013
