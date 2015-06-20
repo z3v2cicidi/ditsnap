@@ -1,22 +1,15 @@
 #include "stdafx.h"
 #include "MainFrame.h"
-#include "TableModel.h"
-#include "TableController.h"
+#include "EseDbManager.h"
 
 CAppModule _Module;
-
-CMainFrame* MvcInit()
-{
-	ITableModel* tableModel = new CTableModel();
-	ITableController* tableController = new CTableController(tableModel);
-	return tableController->GetView();
-}
 
 int Run(LPTSTR /*lpstrCmdLine*/  = nullptr, int nCmdShow = SW_SHOWDEFAULT)
 {
 	CMessageLoop theLoop;
 	_Module.AddMessageLoop(&theLoop);
-	CMainFrame* wndMain = MvcInit();
+	EseDbManager* eseDbManager = new EseDbManager();
+	CMainFrame* wndMain = new CMainFrame(eseDbManager);
 	if (wndMain->CreateEx() == nullptr)
 	{
 		ATLTRACE(_T("Main window creation failed!\n"));

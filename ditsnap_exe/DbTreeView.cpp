@@ -5,17 +5,15 @@
 
 using namespace EseDataAccess;
 
-CDbTreeView::CDbTreeView(ITableController* tableController,
-                         ITableModel* tableModel)
-	: tableController_(tableController),
-	  tableModel_(tableModel)
+CDbTreeView::CDbTreeView(EseDbManager* eseDbManager)
+	: eseDbManager_(eseDbManager)
 {
-	tableModel_->RegisterDbObserver(this);
+	eseDbManager_->RegisterDbObserver(this);
 }
 
 CDbTreeView::~CDbTreeView(void)
 {
-	tableModel_->RemoveDbObserver(this);
+	eseDbManager_->RemoveDbObserver(this);
 }
 
 LRESULT CDbTreeView::OnTreeDoubleClick(LPNMHDR pnmh)
@@ -34,7 +32,7 @@ LRESULT CDbTreeView::OnTreeDoubleClick(LPNMHDR pnmh)
 	{
 		try
 		{
-			tableController_->SetTable(tableName);			
+			eseDbManager_->SetTable(tableName);			
 		}
 		catch (EseException& e)
 		{
@@ -46,7 +44,7 @@ LRESULT CDbTreeView::OnTreeDoubleClick(LPNMHDR pnmh)
 	return 0;
 }
 
-void CDbTreeView::LoadEseDb()
+void CDbTreeView::LoadEseDbManager()
 {
 	DeleteAllItems();
 	CImageList images;
@@ -54,14 +52,14 @@ void CDbTreeView::LoadEseDb()
 	                       RGB( 255, 0, 255 ), IMAGE_BITMAP, LR_CREATEDIBSECTION);
 	this->SetImageList(images);
 
-	HTREEITEM hRootItem = InsertItem(tableModel_->GetFilePath().c_str(), 0, 0, TVI_ROOT, TVI_LAST);
+	HTREEITEM hRootItem = InsertItem(eseDbManager_->GetFilePath().c_str(), 0, 0, TVI_ROOT, TVI_LAST);
 	if (hRootItem != nullptr)
 	{
 		SetItemData(hRootItem, reinterpret_cast<DWORD_PTR>(hRootItem));
 	}
 	try
 	{
-		vector<wstring> tableNames = tableModel_->GetTableNames();
+		vector<wstring> tableNames = eseDbManager_->GetTableNames();
 		for (uint i = 0; i < tableNames.size(); ++i)
 		{
 			HTREEITEM hItem = InsertItem(tableNames[i].c_str(), 1, 1, hRootItem, TVI_LAST);

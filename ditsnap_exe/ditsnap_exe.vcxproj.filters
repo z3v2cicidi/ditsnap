@@ -33,16 +33,13 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="TableController.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="TableListView.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="TableModel.cpp">
+    <ClCompile Include="MainFrame.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="MainFrame.cpp">
+    <ClCompile Include="EseDbManager.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -68,19 +65,16 @@
     <ClInclude Include="stdafx.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="TableController.h">
-      <Filter>headers</Filter>
-    </ClInclude>
     <ClInclude Include="TableListView.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="TableModel.h">
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="MainFrame.h">
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="Interfaces.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="EseDbManager.h">
       <Filter>headers</Filter>
     </ClInclude>
   </ItemGroup>

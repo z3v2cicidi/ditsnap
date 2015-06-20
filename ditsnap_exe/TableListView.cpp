@@ -5,19 +5,19 @@
 
 using namespace EseDataAccess;
 
-CTableListView::CTableListView(ITableModel* tableModel)
-	: tableModel_(tableModel),
+CTableListView::CTableListView(EseDbManager* eseDbManager)
+	: eseDbManager_(eseDbManager),
 	  detailDialog_(nullptr)
 {
-	tableModel_->RegisterTableObserver(this);
-	tableModel_->RegisterDbObserver(this);
+	eseDbManager_->RegisterTableObserver(this);
+	eseDbManager_->RegisterDbObserver(this);
 }
 
 CTableListView::~CTableListView()
 {
 	CleanupDetailDialog();
-	tableModel_->RemoveTableObserver(this);
-	tableModel_->RemoveDbObserver(this);
+	eseDbManager_->RemoveTableObserver(this);
+	eseDbManager_->RemoveDbObserver(this);
 }
 
 LRESULT CTableListView::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -35,10 +35,10 @@ LRESULT CTableListView::OnListDoubleClick(LPNMHDR pnmh)
 		return 0;
 	}
 
-	if (L"datatable" == tableModel_->GetCurrentTableName())
+	if (L"datatable" == eseDbManager_->GetCurrentTableName())
 	{
 		CleanupDetailDialog();
-		detailDialog_ = new CDetailDialog(tableModel_, this,
+		detailDialog_ = new CDetailDialog(eseDbManager_, this,
 		                                  listItemIdToEseRowIndex_[pnmia->iItem]);
 		detailDialog_->Create(0);
 		detailDialog_->ShowWindow(SW_SHOW);
@@ -51,24 +51,24 @@ void CTableListView::LoadTable()
 	const int nWidth = 70;
 	try
 	{
-		for (uint columnIndex = 0; columnIndex < tableModel_->GetColumnCount(); ++columnIndex)
+		for (uint columnIndex = 0; columnIndex < eseDbManager_->GetColumnCount(); ++columnIndex)
 		{
-			wstring columnName = tableModel_->GetColumnName(columnIndex);
+			wstring columnName = eseDbManager_->GetColumnName(columnIndex);
 			InsertColumn(columnIndex, columnName.c_str(), LVCFMT_LEFT, nWidth);
 		}
 
 		int rowIndex = 0;
-		tableModel_->MoveFirstRecord();
+		eseDbManager_->MoveFirstRecord();
 		do
 		{
-			for (uint columnIndex = 0; columnIndex < tableModel_->GetColumnCount(); ++columnIndex)
+			for (uint columnIndex = 0; columnIndex < eseDbManager_->GetColumnCount(); ++columnIndex)
 			{
 				// Support to display multi-valued column data.
 				wstring columnValues;
-				int numberOfColumnValue = tableModel_->CountColumnValue(columnIndex);
+				int numberOfColumnValue = eseDbManager_->CountColumnValue(columnIndex);
 				for (int itagSequence = 1; itagSequence <= numberOfColumnValue; ++itagSequence)
 				{
-					wstring columnValue = tableModel_->RetrieveColumnDataAsString(columnIndex, itagSequence);
+					wstring columnValue = eseDbManager_->RetrieveColumnDataAsString(columnIndex, itagSequence);
 					columnValues += columnValue;
 					if (numberOfColumnValue != itagSequence)
 					{
@@ -87,7 +87,7 @@ void CTableListView::LoadTable()
 			}
 			++rowIndex;
 		}
-		while (tableModel_->MoveNextRecord());
+		while (eseDbManager_->MoveNextRecord());
 	}
 	catch (EseException& e)
 	{
@@ -134,7 +134,7 @@ void CTableListView::LoadDatatable()
 		// and this map is used in filterTable function.
 		int rowIndex = 0;
 		int eseRowIndex = 0;
-		tableModel_->MoveFirstRecord();
+		eseDbManager_->MoveFirstRecord();
 		do
 		{
 			for (int i = 0; i < _countof(listHeaderColumnNames); ++i)
@@ -145,7 +145,7 @@ void CTableListView::LoadDatatable()
 			++eseRowIndex;
 			++rowIndex;
 		}
-		while (tableModel_->MoveNextRecord());
+		while (eseDbManager_->MoveNextRecord());
 	}
 	catch (EseException& e)
 	{
@@ -159,7 +159,7 @@ void CTableListView::LoadDatatable()
 void CTableListView::FilterTable(int filterFlag)
 {
 	CleanupDetailDialog();
-	if (L"datatable" != tableModel_->GetCurrentTableName())
+	if (L"datatable" != eseDbManager_->GetCurrentTableName())
 	{
 		return;
 	}
@@ -173,28 +173,28 @@ void CTableListView::FilterTable(int filterFlag)
 	wstring displaySpecifierDnt;
 	try
 	{
-		tableModel_->MoveFirstRecord();
+		eseDbManager_->MoveFirstRecord();
 		do
 		{
-			wstring objectName = tableModel_->RetrieveColumnDataAsString(columnMap_[L"ATTm589825"]);
+			wstring objectName = eseDbManager_->RetrieveColumnDataAsString(columnMap_[L"ATTm589825"]);
 			if (classSchemaDnt.empty() && L"Class-Schema" == objectName)
 			{
-				classSchemaDnt = tableModel_->RetrieveColumnDataAsString(columnMap_[L"DNT_col"]);
+				classSchemaDnt = eseDbManager_->RetrieveColumnDataAsString(columnMap_[L"DNT_col"]);
 			}
 			if (attributeSchemaDnt.empty() && L"Attribute-Schema" == objectName)
 			{
-				attributeSchemaDnt = tableModel_->RetrieveColumnDataAsString(columnMap_[L"DNT_col"]);
+				attributeSchemaDnt = eseDbManager_->RetrieveColumnDataAsString(columnMap_[L"DNT_col"]);
 			}
 			if (subSchemaDnt.empty() && L"SubSchema" == objectName)
 			{
-				subSchemaDnt = tableModel_->RetrieveColumnDataAsString(columnMap_[L"DNT_col"]);
+				subSchemaDnt = eseDbManager_->RetrieveColumnDataAsString(columnMap_[L"DNT_col"]);
 			}
 			if (displaySpecifierDnt.empty() && L"Display-Specifier" == objectName)
 			{
-				displaySpecifierDnt = tableModel_->RetrieveColumnDataAsString(columnMap_[L"DNT_col"]);
+				displaySpecifierDnt = eseDbManager_->RetrieveColumnDataAsString(columnMap_[L"DNT_col"]);
 			}
 		}
-		while (tableModel_->MoveNextRecord());
+		while (eseDbManager_->MoveNextRecord());
 	}
 	catch (EseException& e)
 	{
@@ -208,11 +208,11 @@ void CTableListView::FilterTable(int filterFlag)
 	{
 		int eseRowIndex = -1;
 		int rowIndex = 0;
-		tableModel_->MoveFirstRecord();
+		eseDbManager_->MoveFirstRecord();
 		do
 		{
 			++eseRowIndex;
-			wstring objectCategory = tableModel_->RetrieveColumnDataAsString(columnMap_[L"ATTb590606"]);
+			wstring objectCategory = eseDbManager_->RetrieveColumnDataAsString(columnMap_[L"ATTb590606"]);
 			if (!(filterFlag & CLASSSCHEMA) && classSchemaDnt == objectCategory) continue;
 			if (!(filterFlag & ATTRIBUTESCHEMA) && attributeSchemaDnt == objectCategory) continue;
 			if (!(filterFlag & SUBSCHEMA) && subSchemaDnt == objectCategory) continue;
@@ -227,13 +227,13 @@ void CTableListView::FilterTable(int filterFlag)
 
 			for (int i = 0; i < _countof(listHeaderColumnNames); ++i)
 			{
-				wstring s(tableModel_->RetrieveColumnDataAsString(columnMap_[listHeaderColumnNames[i]]));
+				wstring s(eseDbManager_->RetrieveColumnDataAsString(columnMap_[listHeaderColumnNames[i]]));
 				AddItem(rowIndex, i, s.c_str());
 			}
 			listItemIdToEseRowIndex_.insert(pair<int, int>(rowIndex, eseRowIndex));
 			++rowIndex;
 		}
-		while (tableModel_->MoveNextRecord());
+		while (eseDbManager_->MoveNextRecord());
 	}
 	catch (EseException& e)
 	{
@@ -259,7 +259,7 @@ void CTableListView::LoadEseTable()
 	CleanupTable();
 	CleanupDetailDialog();
 
-	if (L"datatable" == tableModel_->GetCurrentTableName())
+	if (L"datatable" == eseDbManager_->GetCurrentTableName())
 	{
 		LoadDatatable();
 	}
@@ -269,7 +269,7 @@ void CTableListView::LoadEseTable()
 	}
 }
 
-void CTableListView::LoadEseDb()
+void CTableListView::LoadEseDbManager()
 {
 	CleanupTable();
 	CleanupDetailDialog();
@@ -313,7 +313,7 @@ void CTableListView::InsertColumnHelper(int nCol, wchar_t* columnNameLikeATTxxxx
 
 void CTableListView::AddItemHelper(int nItem, int nSubItem, wchar_t* columnNameLikeATTxxxx)
 {
-	wstring s(tableModel_->RetrieveColumnDataAsString(columnMap_[columnNameLikeATTxxxx]));
+	wstring s(eseDbManager_->RetrieveColumnDataAsString(columnMap_[columnNameLikeATTxxxx]));
 	AddItem(nItem, nSubItem, s.c_str());
 	return;
 }
@@ -322,9 +322,9 @@ bool CTableListView::MapColumnNameToColumnIndex(map<wstring, int>* pColumnMap)
 {
 	try
 	{
-		for (uint columnIndex = 0; columnIndex < tableModel_->GetColumnCount(); ++columnIndex)
+		for (uint columnIndex = 0; columnIndex < eseDbManager_->GetColumnCount(); ++columnIndex)
 		{
-			wstring columnName(tableModel_->GetColumnName(columnIndex));
+			wstring columnName(eseDbManager_->GetColumnName(columnIndex));
 			pColumnMap->insert(pair<wstring, int>(wstring(columnName), columnIndex));
 		}
 	}

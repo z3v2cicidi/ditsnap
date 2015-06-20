@@ -7,11 +7,10 @@
 
 using namespace EseDataAccess;
 
-CMainFrame::CMainFrame(ITableController* tableController,
-                       ITableModel* tableModel)
-	: tableController_(tableController),
-	  dbTreeView_(CDbTreeView(tableController, tableModel)),
-	  tableListView_(CTableListView(tableModel))
+CMainFrame::CMainFrame(EseDbManager* eseDbManager)
+	: dbTreeView_(CDbTreeView(eseDbManager)),
+	  tableListView_(CTableListView(eseDbManager)),
+	  eseDbManager_(eseDbManager)
 {
 }
 
@@ -57,7 +56,7 @@ void CMainFrame::OnFileOpen(UINT uCode, int nID, HWND hwndCtrl)
 	{
 		try
 		{
-			tableController_->OpenTable(fileDialog.m_szFileName);
+			eseDbManager_->OpenFile(fileDialog.m_szFileName);
 		}
 		catch (EseException& e)
 		{
@@ -90,7 +89,7 @@ void CMainFrame::OnFileSnapshot(UINT uCode, int nID, HWND hwndCtrl)
 		wchar_t* snapshotFilePath = snapshotWizard.GetSnapshotFilePath();
 		if (nullptr != snapshotFilePath)
 		{
-			tableController_->OpenTable(snapshotFilePath);
+			eseDbManager_->OpenFile(snapshotFilePath);
 		}
 	}
 }

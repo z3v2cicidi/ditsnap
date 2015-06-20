@@ -5,10 +5,10 @@
 
 using namespace EseDataAccess;
 
-CDetailDialog::CDetailDialog(ITableModel* tableModel,
+CDetailDialog::CDetailDialog(EseDbManager* eseDbManager,
                              CTableListView* parent,
                              int rowIndex)
-	: tableModel_(tableModel), parent_(parent), rowIndex_(rowIndex)
+	: eseDbManager_(eseDbManager), parent_(parent), rowIndex_(rowIndex)
 {
 };
 
@@ -40,7 +40,7 @@ LRESULT CDetailDialog::OnInitDialog(HWND hWnd, LPARAM lParam)
 
 	try
 	{
-		tableModel_->Move(rowIndex_);
+		eseDbManager_->Move(rowIndex_);
 	}
 	catch (EseException& e)
 	{
@@ -73,7 +73,7 @@ void CDetailDialog::SetupTopLabel()
 
 	try
 	{
-		wstring rdn(tableModel_->RetrieveColumnDataAsString(ATT_RDN));
+		wstring rdn(eseDbManager_->RetrieveColumnDataAsString(ATT_RDN));
 		rdnLabel.SetWindowTextW(rdn.c_str());
 	}
 	catch (EseException& e)
@@ -92,10 +92,10 @@ void CDetailDialog::SetupListItems()
 		detailListView_.DeleteAllItems();
 		if (!checkBox_.GetCheck())
 		{
-			for (uint columnIndex = 0; columnIndex < tableModel_->GetColumnCount(); ++columnIndex)
+			for (uint columnIndex = 0; columnIndex < eseDbManager_->GetColumnCount(); ++columnIndex)
 			{
 				wstring columnValues = GetColumnValueString(columnIndex);
-				wstring columnName(tableModel_->GetColumnName(columnIndex));
+				wstring columnName(eseDbManager_->GetColumnName(columnIndex));
 				const wstring adName = parent_->GetAdNameFromColumnName(columnName);
 				detailListView_.AddItem(columnIndex, 0, columnName.c_str());
 				detailListView_.AddItem(columnIndex, 1, adName.c_str());
@@ -112,12 +112,12 @@ void CDetailDialog::SetupListItems()
 		else
 		{
 			int visibleColumnIndex = 0;
-			for (uint columnIndex = 0; columnIndex < tableModel_->GetColumnCount(); ++columnIndex)
+			for (uint columnIndex = 0; columnIndex < eseDbManager_->GetColumnCount(); ++columnIndex)
 			{
 				wstring columnValues = GetColumnValueString(columnIndex);
 				if (0 != columnValues.size())
 				{
-					wstring columnName(tableModel_->GetColumnName(columnIndex));
+					wstring columnName(eseDbManager_->GetColumnName(columnIndex));
 					const wstring adName = parent_->GetAdNameFromColumnName(columnName);
 					detailListView_.AddItem(visibleColumnIndex, 0, columnName.c_str());
 					detailListView_.AddItem(visibleColumnIndex, 1, adName.c_str());
@@ -139,10 +139,10 @@ void CDetailDialog::SetupListItems()
 wstring CDetailDialog::GetColumnValueString(uint columnIndex)
 {
 	wstring columnValues;
-	int numberOfColumnValue = tableModel_->CountColumnValue(columnIndex);
+	int numberOfColumnValue = eseDbManager_->CountColumnValue(columnIndex);
 	for (int itagSequence = 1; itagSequence <= numberOfColumnValue; ++itagSequence)
 	{
-		wstring columnValue = tableModel_->RetrieveColumnDataAsString(columnIndex, itagSequence);
+		wstring columnValue = eseDbManager_->RetrieveColumnDataAsString(columnIndex, itagSequence);
 		columnValues += columnValue;
 		if (numberOfColumnValue != itagSequence)
 		{

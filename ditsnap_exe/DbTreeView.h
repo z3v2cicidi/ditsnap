@@ -1,5 +1,6 @@
 #pragma once
 #include "Interfaces.h"
+#include "EseDbManager.h"
 
 // Defined in EseDataAccess.h 
 namespace EseDataAccess
@@ -19,13 +20,12 @@ public:
 		DEFAULT_REFLECTION_HANDLER()
 	END_MSG_MAP()
 
-	CDbTreeView(ITableController* tableController, ITableModel* tableModel);
+	CDbTreeView(EseDbManager* eseDbManager);
 	~CDbTreeView(void);
 
 	LRESULT OnTreeDoubleClick(LPNMHDR pnmh);
-	virtual void LoadEseDb() override;
+	virtual void LoadEseDbManager() override;
 
 private:
-	ITableController* tableController_;
-	ITableModel* tableModel_;
+	EseDbManager* eseDbManager_;
 };

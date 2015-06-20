@@ -4,6 +4,8 @@
 #include "DbTreeView.h"
 #include "Interfaces.h"
 
+class EseDbManager;
+
 class CMainFrame : public CFrameWindowImpl<CMainFrame>, public CUpdateUI<CMainFrame>
 {
 public:
@@ -27,7 +29,7 @@ public:
 		REFLECT_NOTIFICATIONS() // Message Reflection
 	END_MSG_MAP()
 
-	CMainFrame(ITableController* tableController, ITableModel* tableModel);
+	CMainFrame(EseDbManager* eseDbManager);
 
 	LRESULT OnCreate(LPCREATESTRUCT lpcs);
 	void OnFileExit(UINT uCode, int nID, HWND hwndCtrl);
@@ -38,11 +40,10 @@ public:
 	void OnToolFilter(UINT uCode, int nID, HWND hwndCtrl);
 
 private:
-	ITableController* tableController_;
 	CTableListView tableListView_;
 	CDbTreeView dbTreeView_;
 	CSplitterWindow splitter_;
-	CPaneContainer pane_;
+	EseDbManager* eseDbManager_;
 
 	DISALLOW_COPY_AND_ASSIGN(CMainFrame);
 };

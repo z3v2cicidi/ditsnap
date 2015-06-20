@@ -8,6 +8,7 @@ namespace EseDataAccess
 }
 
 class CTableListView;
+class EseDbManager;
 
 class CDetailDialog : public CDialogImpl<CDetailDialog>
 {
@@ -21,7 +22,7 @@ public:
 		COMMAND_HANDLER_EX(IDC_BUTTON_COPYALL, BN_CLICKED, OnCopyAllButtonClicked)
 	END_MSG_MAP()
 
-	CDetailDialog(ITableModel* tableModel, CTableListView* paBrent, int rowIndex);
+	CDetailDialog(EseDbManager* eseDbManager, CTableListView* paBrent, int rowIndex);
 	~CDetailDialog();
 	LRESULT OnInitDialog(HWND hWnd, LPARAM lParam);
 	void OnCancel(UINT uNotifyCode, int nID, CWindow wndCtl);
@@ -29,7 +30,7 @@ public:
 	LRESULT OnCopyAllButtonClicked(UINT uNotifyCode, int nID, CWindow wndCtl);
 
 private:
-	ITableModel* tableModel_;
+	EseDbManager* eseDbManager_;
 	CTableListView* parent_;
 	CListViewCtrl detailListView_;
 	CButton checkBox_;

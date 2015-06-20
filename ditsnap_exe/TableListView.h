@@ -1,5 +1,6 @@
 #pragma once
 #include "Interfaces.h"
+#include "EseDbManager.h"
 
 class CDetailDialog;
 
@@ -24,7 +25,7 @@ public:
 		DEFAULT_REFLECTION_HANDLER()
 	END_MSG_MAP()
 
-	CTableListView(ITableModel* tableModel);
+	CTableListView(EseDbManager* eseDbManager);
 	~CTableListView();
 
 	LRESULT OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -35,14 +36,14 @@ public:
 	const wstring GetAdNameFromColumnName(wstring columnName);
 	int GetColumnIdFromColumnName(wstring columnName);
 	virtual void LoadEseTable() override;
-	virtual void LoadEseDb() override;
+	virtual void LoadEseDbManager() override;
 
 private:
 	CDetailDialog* detailDialog_;
 	map<wstring, int> columnMap_;
 	map<wstring, wstring> adNameMap_;
 	map<int, int> listItemIdToEseRowIndex_;
-	ITableModel* tableModel_;
+	EseDbManager* eseDbManager_;
 
 	void CleanupTable();
 	void CleanupDetailDialog();
