@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "MainFrm.h"
+#include "MainFrame.h"
 #include "TableModel.h"
 #include "TableController.h"
 
@@ -16,9 +16,7 @@ int Run(LPTSTR /*lpstrCmdLine*/  = nullptr, int nCmdShow = SW_SHOWDEFAULT)
 {
 	CMessageLoop theLoop;
 	_Module.AddMessageLoop(&theLoop);
-
 	CMainFrame* wndMain = MvcInit();
-
 	if (wndMain->CreateEx() == nullptr)
 	{
 		ATLTRACE(_T("Main window creation failed!\n"));
@@ -26,9 +24,7 @@ int Run(LPTSTR /*lpstrCmdLine*/  = nullptr, int nCmdShow = SW_SHOWDEFAULT)
 	}
 
 	wndMain->ShowWindow(nCmdShow);
-
 	int nRet = theLoop.Run();
-
 	_Module.RemoveMessageLoop();
 	return nRet;
 }

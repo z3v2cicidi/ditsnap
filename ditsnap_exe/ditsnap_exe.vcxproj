@@ -81,6 +81,7 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat />
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <AdditionalDependencies>EseDataAccess.lib;VssCopy.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -108,7 +109,7 @@
     <ClCompile Include="DetailDialog.cpp" />
     <ClCompile Include="ditsnap.cpp" />
     <ClCompile Include="FilterDialog.cpp" />
-    <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="MainFrame.cpp" />
     <ClCompile Include="SnapshotWizard.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="TableController.cpp" />
@@ -120,7 +121,7 @@
     <ClInclude Include="DbTreeView.h" />
     <ClInclude Include="DetailDialog.h" />
     <ClInclude Include="FilterDialog.h" />
-    <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="MainFrame.h" />
     <ClInclude Include="MVCInterfaces.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SnapshotWizard.h" />

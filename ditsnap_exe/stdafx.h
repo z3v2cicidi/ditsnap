@@ -13,11 +13,9 @@
 // WTL headers
 #define _WTL_NO_CSTRING
 #pragma warning( disable : 4996 )
-
 #include "wtl/atlapp.h"
 
 extern CAppModule _Module;
-
 
 #include "wtl/atlcrack.h"
 #include "wtl/atlmisc.h"

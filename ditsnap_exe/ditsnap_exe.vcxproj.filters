@@ -27,9 +27,6 @@
     <ClCompile Include="FilterDialog.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="MainFrm.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="SnapshotWizard.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -45,6 +42,9 @@
     <ClCompile Include="TableModel.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="MainFrame.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AboutDlg.h">
@@ -57,9 +57,6 @@
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="FilterDialog.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="MainFrm.h">
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
@@ -81,6 +78,9 @@
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="MVCInterfaces.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MainFrame.h">
       <Filter>headers</Filter>
     </ClInclude>
   </ItemGroup>

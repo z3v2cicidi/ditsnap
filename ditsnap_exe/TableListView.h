@@ -24,11 +24,11 @@ public:
 		return FALSE;
 	}
 
-	BEGIN_MSG_MAP(CTableListView)
+	BEGIN_MSG_MAP_EX(CTableListView)
 		MSG_WM_CREATE(OnCreate)
 		REFLECTED_NOTIFY_CODE_HANDLER_EX(NM_DBLCLK, OnListDblClick)
 		DEFAULT_REFLECTION_HANDLER()
-		END_MSG_MAP()
+	END_MSG_MAP()
 
 	CTableListView(ITableController* tableController, ITableModel* tableModel);
 	~CTableListView();

@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "TableController.h"
-#include "MainFrm.h"
+#include "MainFrame.h"
 
 CTableController::CTableController(ITableModel* tableModel)
 	: tableModel_(tableModel)

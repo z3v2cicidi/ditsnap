@@ -28,10 +28,9 @@ void CTableModel::RemoveTableObserver(ITableObserver* o)
 
 void CTableModel::NotifyTableObservers()
 {
-	for (list<ITableObserver*>::iterator p = tableObservers_.begin();
-	     p != tableObservers_.end(); ++p)
+	for (auto& o : tableObservers_)
 	{
-		(*p)->UpdateTable();
+		o->UpdateTable();
 	}
 }
 
@@ -47,10 +46,9 @@ void CTableModel::RemoveDbObserver(IDbObserver* o)
 
 void CTableModel::NotifyDbObservers()
 {
-	for (list<IDbObserver*>::iterator p = tableNameObservers_.begin();
-	     p != tableNameObservers_.end(); ++p)
+	for (auto& o : tableNameObservers_)
 	{
-		(*p)->UpdateDb();
+		o->UpdateDb();
 	}
 }
 
