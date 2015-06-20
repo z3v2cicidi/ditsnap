@@ -5,10 +5,8 @@
 
 using namespace EseDataAccess;
 
-CTableListView::CTableListView(ITableController* tableController,
-                               ITableModel* tableModel)
-	: tableController_(tableController),
-	  tableModel_(tableModel),
+CTableListView::CTableListView(ITableModel* tableModel)
+	: tableModel_(tableModel),
 	  detailDialog_(nullptr)
 {
 	tableModel_->RegisterTableObserver(this);
@@ -22,15 +20,14 @@ CTableListView::~CTableListView()
 	tableModel_->RemoveDbObserver(this);
 }
 
-int CTableListView::OnCreate(LPCREATESTRUCT lpCreateStruct)
+LRESULT CTableListView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	LRESULT lRet = DefWindowProc();
-	SetFont(AtlGetDefaultGuiFont());
 	SetExtendedListViewStyle(LVS_EX_INFOTIP | LVS_EX_FULLROWSELECT);
-	return static_cast<int>(lRet);
+	return lRet;
 }
 
-LRESULT CTableListView::OnListDblClick(LPNMHDR pnmh)
+LRESULT CTableListView::OnListDoubleClick(LPNMHDR pnmh)
 {
 	LPNMITEMACTIVATE pnmia = reinterpret_cast<LPNMITEMACTIVATE>(pnmh);
 	if (pnmia->iItem < 0)
@@ -257,7 +254,7 @@ int CTableListView::GetColumnIdFromColumnName(wstring columnName)
 	return columnMap_[wstring(columnName)];
 }
 
-void CTableListView::UpdateTable()
+void CTableListView::LoadEseTable()
 {
 	CleanupTable();
 	CleanupDetailDialog();
@@ -272,7 +269,7 @@ void CTableListView::UpdateTable()
 	}
 }
 
-void CTableListView::UpdateDb()
+void CTableListView::LoadEseDb()
 {
 	CleanupTable();
 	CleanupDetailDialog();

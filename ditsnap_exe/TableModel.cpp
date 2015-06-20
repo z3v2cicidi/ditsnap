@@ -30,7 +30,7 @@ void CTableModel::NotifyTableObservers()
 {
 	for (auto& o : tableObservers_)
 	{
-		o->UpdateTable();
+		o->LoadEseTable();
 	}
 }
 
@@ -48,7 +48,7 @@ void CTableModel::NotifyDbObservers()
 {
 	for (auto& o : tableNameObservers_)
 	{
-		o->UpdateDb();
+		o->LoadEseDb();
 	}
 }
 

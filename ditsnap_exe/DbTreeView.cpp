@@ -18,7 +18,7 @@ CDbTreeView::~CDbTreeView(void)
 	tableModel_->RemoveDbObserver(this);
 }
 
-LRESULT CDbTreeView::OnTreeDblClick(LPNMHDR pnmh)
+LRESULT CDbTreeView::OnTreeDoubleClick(LPNMHDR pnmh)
 {
 	UINT uFlag;
 	CPoint pt = GetMessagePos();
@@ -34,10 +34,7 @@ LRESULT CDbTreeView::OnTreeDblClick(LPNMHDR pnmh)
 	{
 		try
 		{
-			if (wstring(tableName) != tableModel_->GetFilePath())
-			{
-				tableController_->SetTable(tableName);
-			}
+			tableController_->SetTable(tableName);			
 		}
 		catch (EseException& e)
 		{
@@ -49,7 +46,7 @@ LRESULT CDbTreeView::OnTreeDblClick(LPNMHDR pnmh)
 	return 0;
 }
 
-void CDbTreeView::UpdateDb()
+void CDbTreeView::LoadEseDb()
 {
 	DeleteAllItems();
 	CImageList images;

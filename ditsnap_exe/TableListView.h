@@ -4,8 +4,7 @@
 class CDetailDialog;
 
 class CTableListView : public CWindowImpl<CTableListView, CListViewCtrl>,
-                       ITableObserver,
-                       IDbObserver
+                       ITableObserver, IDbObserver
 {
 public:
 	enum
@@ -21,29 +20,28 @@ public:
 
 	BEGIN_MSG_MAP_EX(CTableListView)
 		MSG_WM_CREATE(OnCreate)
-		REFLECTED_NOTIFY_CODE_HANDLER_EX(NM_DBLCLK, OnListDblClick)
+		REFLECTED_NOTIFY_CODE_HANDLER_EX(NM_DBLCLK, OnListDoubleClick)
 		DEFAULT_REFLECTION_HANDLER()
 	END_MSG_MAP()
 
-	CTableListView(ITableController* tableController, ITableModel* tableModel);
+	CTableListView(ITableModel* tableModel);
 	~CTableListView();
 
-	int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	LRESULT OnListDblClick(LPNMHDR pnmh);
+	LRESULT OnCreate(LPCREATESTRUCT lpCreateStruct);
+	LRESULT OnListDoubleClick(LPNMHDR pnmh);
 	void LoadTable();
 	void LoadDatatable();
 	void FilterTable(int filterFlag);
 	const wstring GetAdNameFromColumnName(wstring columnName);
 	int GetColumnIdFromColumnName(wstring columnName);
-	virtual void UpdateTable() override;
-	virtual void UpdateDb() override;
+	virtual void LoadEseTable() override;
+	virtual void LoadEseDb() override;
 
 private:
 	CDetailDialog* detailDialog_;
 	map<wstring, int> columnMap_;
 	map<wstring, wstring> adNameMap_;
 	map<int, int> listItemIdToEseRowIndex_;
-	ITableController* tableController_;
 	ITableModel* tableModel_;
 
 	void CleanupTable();

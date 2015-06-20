@@ -30,16 +30,15 @@ public:
 	CMainFrame(ITableController* tableController, ITableModel* tableModel);
 
 	LRESULT OnCreate(LPCREATESTRUCT lpcs);
-	LRESULT OnFileExit(UINT uCode, int nID, HWND hwndCtrl);
-	LRESULT OnFileOpen(UINT uCode, int nID, HWND hwndCtrl);
-	LRESULT OnFileSnapshot(UINT uCode, int nID, HWND hwndCtrl);
-	LRESULT OnViewStatusBar(UINT uCode, int nID, HWND hwndCtrl);
-	LRESULT OnAppAbout(UINT uCode, int nID, HWND hwndCtrl);
-	LRESULT OnToolFilter(UINT uCode, int nID, HWND hwndCtrl);
+	void OnFileExit(UINT uCode, int nID, HWND hwndCtrl);
+	void OnFileOpen(UINT uCode, int nID, HWND hwndCtrl);
+	void OnFileSnapshot(UINT uCode, int nID, HWND hwndCtrl);
+	void OnViewStatusBar(UINT uCode, int nID, HWND hwndCtrl);
+	void OnAppAbout(UINT uCode, int nID, HWND hwndCtrl);
+	void OnToolFilter(UINT uCode, int nID, HWND hwndCtrl);
 
 private:
 	ITableController* tableController_;
-	ITableModel* tableModel_;
 	CTableListView tableListView_;
 	CDbTreeView dbTreeView_;
 	CSplitterWindow splitter_;

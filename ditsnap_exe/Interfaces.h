@@ -9,7 +9,7 @@ public:
 	{
 	};
 
-	virtual void UpdateTable() = 0;
+	virtual void LoadEseTable() = 0;
 };
 
 class IDbObserver
@@ -19,8 +19,9 @@ public:
 	{
 	};
 
-	virtual void UpdateDb() = 0;
+	virtual void LoadEseDb() = 0;
 };
+
 
 class ITableModel
 {

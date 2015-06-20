@@ -15,15 +15,15 @@ public:
 	DECLARE_WND_SUPERCLASS(nullptr, CTreeViewCtrl::GetWndClassName())
 
 	BEGIN_MSG_MAP_EX(CDbTreeView)
-		REFLECTED_NOTIFY_CODE_HANDLER_EX(NM_DBLCLK, OnTreeDblClick)
+		REFLECTED_NOTIFY_CODE_HANDLER_EX(NM_DBLCLK, OnTreeDoubleClick)
 		DEFAULT_REFLECTION_HANDLER()
 	END_MSG_MAP()
 
 	CDbTreeView(ITableController* tableController, ITableModel* tableModel);
 	~CDbTreeView(void);
 
-	LRESULT OnTreeDblClick(LPNMHDR pnmh);
-	virtual void UpdateDb() override;
+	LRESULT OnTreeDoubleClick(LPNMHDR pnmh);
+	virtual void LoadEseDb() override;
 
 private:
 	ITableController* tableController_;
