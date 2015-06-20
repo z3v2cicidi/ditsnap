@@ -1,6 +1,6 @@
-#include "VSSSDK72/inc/win2003/vss.h"
-#include "VSSSDK72/inc/win2003/vswriter.h"
-#include "VSSSDK72/inc/win2003/vsbackup.h"
+#include "vss.h"
+#include "vswriter.h"
+#include "vsbackup.h"
 
 namespace Vss
 {

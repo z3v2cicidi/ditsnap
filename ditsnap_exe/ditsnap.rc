@@ -44,7 +44,7 @@ BEGIN
     LTEXT           "Destination Path:",IDC_STATIC,10,85,51,8
     EDITTEXT        IDC_SOURCE_EDIT,63,60,189,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_DEST_EDIT,63,83,189,14,ES_AUTOHSCROLL
-    LTEXT           "The Snapshot Copy Wizard create a copy of a database file, even if the file is opened in exclusive mode. The Volume Shadow Copy Service (VSS) captures and copies a stable image.",IDC_STATIC,30,12,215,28
+    LTEXT           "The Snapshot Copy Wizard creates a copy of ntds.dit even if the file is opened in exclusive mode. The Volume Shadow Copy Service (VSS) captures and copies a stable image.",IDC_STATIC,30,12,215,28
     LTEXT           "If you click next bottun, the following steps will be executed: \n\n  1. The VSS creates a copy of the source DB file. \n  2. The copy is repaired by Esentutl /p command. ",IDC_STATIC,30,106,215,39
 END
 

@@ -21,7 +21,7 @@ public:
 		COMMAND_HANDLER_EX(IDC_BUTTON_COPYALL, BN_CLICKED, OnCopyAllButtonClicked)
 	END_MSG_MAP()
 
-	CDetailDialog(ITableModel* tableModel, CTableListView* parent, int rowIndex);
+	CDetailDialog(ITableModel* tableModel, CTableListView* paBrent, int rowIndex);
 	~CDetailDialog();
 	LRESULT OnInitDialog(HWND hWnd, LPARAM lParam);
 	void OnCancel(UINT uNotifyCode, int nID, CWindow wndCtl);

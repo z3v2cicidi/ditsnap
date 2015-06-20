@@ -479,8 +479,23 @@ namespace EseDataAccess
 					                   L"Too big binary data to retrieve.");
 				}
 				break;
+			case JET_coltypUnsignedLong:
+				error = swprintf_s(returnString, bufferSize / sizeof(wchar_t), L"%lld",
+					*reinterpret_cast<unsigned long long int*>(pvData));
+				break;
+			case JET_coltypLongLong:
+				error = swprintf_s(returnString, bufferSize / sizeof(wchar_t), L"%lld",
+					*reinterpret_cast<long long int*>(pvData));
+				break;
+			case JET_coltypGUID:
+				error = swprintf_s(returnString, bufferSize / sizeof(wchar_t), L"(GUID)");
+				break;
+			case JET_coltypUnsignedShort:
+				error = swprintf_s(returnString, bufferSize / sizeof(wchar_t), L"%lld",
+					*reinterpret_cast<long long int*>(pvData));
+				break;
 			default:
-				_ASSERT(FALSE);
+				error = swprintf_s(returnString, bufferSize / sizeof(wchar_t), L"unknown type");
 				break;
 			}
 

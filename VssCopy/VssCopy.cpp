@@ -36,7 +36,7 @@ namespace Vss
 
 	void VssCopy::Init()
 	{
-		CHECK_HRESULT( ::CoInitialize(nullptr) );
+		CHECK_HRESULT( ::CoInitialize(NULL) );
 
 		CHECK_HRESULT( ::CreateVssBackupComponents(&pBackupComponents_) );
 		CHECK_HRESULT( pBackupComponents_->InitializeForBackup() );
