@@ -77,10 +77,10 @@
     <ClInclude Include="TableModel.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="MVCInterfaces.h">
+    <ClInclude Include="MainFrame.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="MainFrame.h">
+    <ClInclude Include="Interfaces.h">
       <Filter>headers</Filter>
     </ClInclude>
   </ItemGroup>

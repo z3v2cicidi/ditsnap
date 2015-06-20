@@ -480,7 +480,7 @@ namespace EseDataAccess
 				}
 				break;
 			case JET_coltypUnsignedLong:
-				error = swprintf_s(returnString, bufferSize / sizeof(wchar_t), L"%lld",
+				error = swprintf_s(returnString, bufferSize / sizeof(wchar_t), L"%llu",
 					*reinterpret_cast<unsigned long long int*>(pvData));
 				break;
 			case JET_coltypLongLong:
@@ -491,7 +491,7 @@ namespace EseDataAccess
 				error = swprintf_s(returnString, bufferSize / sizeof(wchar_t), L"(GUID)");
 				break;
 			case JET_coltypUnsignedShort:
-				error = swprintf_s(returnString, bufferSize / sizeof(wchar_t), L"%lld",
+				error = swprintf_s(returnString, bufferSize / sizeof(wchar_t), L"%hu",
 					*reinterpret_cast<long long int*>(pvData));
 				break;
 			default:

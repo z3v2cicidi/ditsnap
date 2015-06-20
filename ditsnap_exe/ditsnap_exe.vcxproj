@@ -116,7 +116,7 @@
     <ClInclude Include="DetailDialog.h" />
     <ClInclude Include="FilterDialog.h" />
     <ClInclude Include="MainFrame.h" />
-    <ClInclude Include="MVCInterfaces.h" />
+    <ClInclude Include="Interfaces.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SnapshotWizard.h" />
     <ClInclude Include="stdafx.h" />

@@ -1,5 +1,5 @@
 #pragma once
-#include "MVCInterfaces.h"
+#include "Interfaces.h"
 #include "TableListView.h"
 
 class CTableController :public ITableController

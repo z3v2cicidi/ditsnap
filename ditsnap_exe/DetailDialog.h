@@ -1,6 +1,6 @@
 #pragma once
 #include "resource.h"
-#include "MVCInterfaces.h"
+#include "Interfaces.h"
 
 namespace EseDataAccess
 {

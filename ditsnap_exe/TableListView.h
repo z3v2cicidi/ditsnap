@@ -1,5 +1,5 @@
 #pragma once
-#include "MVCInterfaces.h"
+#include "Interfaces.h"
 
 class CDetailDialog;
 

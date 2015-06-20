@@ -2,7 +2,7 @@
 #include "resource.h"
 #include "TableListView.h"
 #include "DbTreeView.h"
-#include "MVCInterfaces.h"
+#include "Interfaces.h"
 
 class CMainFrame : public CFrameWindowImpl<CMainFrame>, public CUpdateUI<CMainFrame>
 {

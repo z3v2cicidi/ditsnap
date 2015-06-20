@@ -5,10 +5,7 @@
 class CFilterDialog : public CDialogImpl<CFilterDialog>
 {
 public:
-	enum
-	{
-		IDD = IDD_FILTER_DIALOG
-	};
+	enum { IDD = IDD_FILTER_DIALOG };
 
 	BEGIN_MSG_MAP(CFilterDialog)
 		MSG_WM_INITDIALOG(OnInitDialog)
@@ -17,7 +14,6 @@ public:
 	END_MSG_MAP()
 
 	CFilterDialog(CTableListView* mainListView);
-
 	BOOL OnInitDialog(CWindow wndFocus, LPARAM lInitParam);
 	void OnOK(UINT uNotifyCode, int nID, CWindow wndCtl);
 	void OnCancel(UINT uNotifyCode, int nID, CWindow wndCtl);
