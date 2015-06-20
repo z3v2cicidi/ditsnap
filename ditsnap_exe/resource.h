@@ -1,3 +1,7 @@
+//{{NO_DEPENDENCIES}}
+// Microsoft Visual C++ generated include file.
+// Used by ditsnap.rc
+//
 #define IDD_ABOUTBOX                    100
 #define IDD_SCWIZARD1                   106
 #define IDR_MAINFRAME                   128

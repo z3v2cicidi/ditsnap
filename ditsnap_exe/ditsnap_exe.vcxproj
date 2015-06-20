@@ -132,6 +132,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\..\databaseAndTable.bmp" />
+    <Image Include="res\databaseAndTable.bmp" />
     <Image Include="res\ditsnap.ico" />
     <Image Include="res\icon1.ico" />
   </ItemGroup>

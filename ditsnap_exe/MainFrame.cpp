@@ -16,10 +16,6 @@ CMainFrame::CMainFrame(ITableController* tableController,
 {
 }
 
-CMainFrame::~CMainFrame()
-{
-}
-
 LRESULT CMainFrame::OnCreate(LPCREATESTRUCT lpcs)
 {
 	CreateSimpleStatusBar();
@@ -48,24 +44,13 @@ LRESULT CMainFrame::OnCreate(LPCREATESTRUCT lpcs)
 	return 0;
 }
 
-LRESULT CMainFrame::OnDestroy()
-{
-	return 1;
-}
-
-LRESULT CMainFrame::OnFileExit(WORD /*wNotifyCode*/,
-                               WORD /*wID*/,
-                               HWND /*hWndCtl*/,
-                               BOOL& /*bHandled*/)
+LRESULT CMainFrame::OnFileExit(UINT uCode, int nID, HWND hwndCtrl)
 {
 	PostMessage(WM_CLOSE);
 	return 0;
 }
 
-LRESULT CMainFrame::OnFileOpen(WORD /*wNotifyCode*/,
-                               WORD /*wID*/,
-                               HWND /*hWndCtl*/,
-                               BOOL& /*bHandled*/)
+LRESULT CMainFrame::OnFileOpen(UINT uCode, int nID, HWND hwndCtrl)
 {
 	CFileDialog fileDialog(TRUE, _T("txt"), nullptr, OFN_HIDEREADONLY | OFN_CREATEPROMPT,
 	                           _T("dit file (*.dit)\0*.dit\0all file (*.*)\0*.*\0\0"));
@@ -94,10 +79,7 @@ LRESULT CMainFrame::OnFileOpen(WORD /*wNotifyCode*/,
 	return 0;
 }
 
-LRESULT CMainFrame::OnViewStatusBar(WORD /*wNotifyCode*/,
-                                    WORD /*wID*/,
-                                    HWND /*hWndCtl*/,
-                                    BOOL& /*bHandled*/)
+LRESULT CMainFrame::OnViewStatusBar(UINT uCode, int nID, HWND hwndCtrl)
 {
 	BOOL bVisible = !::IsWindowVisible(m_hWndStatusBar);
 	::ShowWindow(m_hWndStatusBar, bVisible ? SW_SHOWNOACTIVATE : SW_HIDE);
@@ -106,20 +88,14 @@ LRESULT CMainFrame::OnViewStatusBar(WORD /*wNotifyCode*/,
 	return 0;
 }
 
-LRESULT CMainFrame::OnAppAbout(WORD /*wNotifyCode*/,
-                               WORD /*wID*/,
-                               HWND /*hWndCtl*/,
-                               BOOL& /*bHandled*/)
+LRESULT CMainFrame::OnAppAbout(UINT uCode, int nID, HWND hwndCtrl)
 {
 	CAboutDlg dlg;
 	dlg.DoModal();
 	return 0;
 }
 
-LRESULT CMainFrame::OnFileSnapshot(WORD /*wNotifyCode*/,
-                                   WORD /*wID*/,
-                                   HWND /*hWndCtl*/,
-                                   BOOL& /*bHandled*/)
+LRESULT CMainFrame::OnFileSnapshot(UINT uCode, int nID, HWND hwndCtrl)
 {
 	CSnapshotWizard snapshotWizard;
 	if (snapshotWizard.DoModal() == IDOK)
@@ -133,10 +109,7 @@ LRESULT CMainFrame::OnFileSnapshot(WORD /*wNotifyCode*/,
 	return 0;
 }
 
-LRESULT CMainFrame::OnToolFilter(WORD /*wNotifyCode*/,
-                                 WORD /*wID*/,
-                                 HWND /*hWndCtl*/,
-                                 BOOL& /*bHandled*/)
+LRESULT CMainFrame::OnToolFilter(UINT uCode, int nID, HWND hwndCtrl)
 {
 	if (nullptr != tableListView_)
 	{

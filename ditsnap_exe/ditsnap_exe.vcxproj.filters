@@ -94,6 +94,9 @@
     <Image Include="res\icon1.ico">
       <Filter>res</Filter>
     </Image>
+    <Image Include="res\databaseAndTable.bmp">
+      <Filter>res</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ditsnap.rc">

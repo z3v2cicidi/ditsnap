@@ -5,16 +5,6 @@
 
 using namespace EseDataAccess;
 
-BOOL CDetailDialog::PreTranslateMessage(MSG* pMsg)
-{
-	return CWindow::IsDialogMessage(pMsg);
-}
-
-BOOL CDetailDialog::OnIdle()
-{
-	return FALSE;
-}
-
 CDetailDialog::CDetailDialog(ITableModel* tableModel,
                              CTableListView* parent,
                              int rowIndex)
@@ -26,7 +16,7 @@ CDetailDialog::~CDetailDialog()
 {
 };
 
-BOOL CDetailDialog::OnInitDialog(CWindow wndFocus, LPARAM lInitParam)
+LRESULT CDetailDialog::OnInitDialog(HWND hWnd, LPARAM lParam)
 {
 	CenterWindow();
 	HICON hIcon = AtlLoadIconImage(IDR_MAINFRAME, LR_DEFAULTCOLOR,
@@ -64,24 +54,12 @@ BOOL CDetailDialog::OnInitDialog(CWindow wndFocus, LPARAM lInitParam)
 	return TRUE;
 }
 
-void CDetailDialog::OnDestroy()
-{
-	CMessageLoop* pLoop = _Module.GetMessageLoop();
-	pLoop->RemoveMessageFilter(this);
-	pLoop->RemoveIdleHandler(this);
-}
-
-void CDetailDialog::OnOK(UINT uNotifyCode, int nID, CWindow wndCtl)
-{
-	DestroyWindow();
-}
-
 void CDetailDialog::OnCancel(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	DestroyWindow();
 }
 
-void CDetailDialog::OnCheck(UINT uNotifyCode, int nID, CWindow wndCtl)
+void CDetailDialog::OnShowAllCheckBoxToggled(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	SetupListItems();
 	return;
@@ -112,81 +90,35 @@ void CDetailDialog::SetupListItems()
 	try
 	{
 		detailListView_.DeleteAllItems();
-
 		if (!checkBox_.GetCheck())
 		{
-			// list up all row
 			for (uint columnIndex = 0; columnIndex < tableModel_->GetColumnCount(); ++columnIndex)
 			{
-				// Column Name
+				wstring columnValues = GetColumnValueString(columnIndex);
 				wstring columnName(tableModel_->GetColumnName(columnIndex));
-
-				// AD Simbol Name
 				const wstring adName = parent_->GetAdNameFromColumnName(columnName);
-
-				// Value (Support to display multi-valued column data)
-				wstring columnValues;
-				int numberOfColumnValue = tableModel_->CountColumnValue(columnIndex);
-				for (int itagSequence = 1; itagSequence <= numberOfColumnValue; ++itagSequence)
-				{
-					wstring columnValue = tableModel_->RetrieveColumnDataAsString(columnIndex, itagSequence);
-					columnValues += columnValue;
-					if (numberOfColumnValue != itagSequence)
-					{
-						columnValues += L"; ";
-					}
-					else if (numberOfColumnValue > 1)
-					{
-						columnValues += L" (Multi-valued column)";
-					}
-				}
-
+				detailListView_.AddItem(columnIndex, 0, columnName.c_str());
+				detailListView_.AddItem(columnIndex, 1, adName.c_str());
 				if (0 == columnValues.size())
 				{
-					detailListView_.AddItem(columnIndex, 0, columnName.c_str());
-					detailListView_.AddItem(columnIndex, 1, adName.c_str());
 					detailListView_.AddItem(columnIndex, 2, L"<not set>");
 				}
 				else
 				{
-					detailListView_.AddItem(columnIndex, 0, columnName.c_str());
-					detailListView_.AddItem(columnIndex, 1, adName.c_str());
 					detailListView_.AddItem(columnIndex, 2, columnValues.c_str());
 				}
 			}
 		}
 		else
 		{
-			// list up only rows that have values
 			int visibleColumnIndex = 0;
-
 			for (uint columnIndex = 0; columnIndex < tableModel_->GetColumnCount(); ++columnIndex)
 			{
-				// Column Name
-				wstring columnName(tableModel_->GetColumnName(columnIndex));
-
-				// AD Simbol Name
-				const wstring adName = parent_->GetAdNameFromColumnName(columnName);
-
-				// Value (Support to display multi-valued column data)
-				wstring columnValues;
-				int numberOfColumnValue = tableModel_->CountColumnValue(columnIndex);
-				for (int itagSequence = 1; itagSequence <= numberOfColumnValue; ++itagSequence)
+				wstring columnValues = GetColumnValueString(columnIndex);
+				if (0 != columnValues.size())
 				{
-					wstring columnValue(tableModel_->RetrieveColumnDataAsString(columnIndex, itagSequence));
-					columnValues += columnValue;
-					if (numberOfColumnValue != itagSequence)
-					{
-						columnValues += L"; ";
-					}
-					else if (numberOfColumnValue > 1)
-					{
-						columnValues += L" (Multi-valued column)";
-					}
-				}
-
-				if (0 != columnValues.length())
-				{
+					wstring columnName(tableModel_->GetColumnName(columnIndex));
+					const wstring adName = parent_->GetAdNameFromColumnName(columnName);
 					detailListView_.AddItem(visibleColumnIndex, 0, columnName.c_str());
 					detailListView_.AddItem(visibleColumnIndex, 1, adName.c_str());
 					detailListView_.AddItem(visibleColumnIndex, 2, columnValues.c_str());
@@ -204,7 +136,24 @@ void CDetailDialog::SetupListItems()
 	return;
 }
 
-LRESULT CDetailDialog::OnBnClickedButtonCopyall(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+wstring CDetailDialog::GetColumnValueString(uint columnIndex)
+{
+	wstring columnValues;
+	int numberOfColumnValue = tableModel_->CountColumnValue(columnIndex);
+	for (int itagSequence = 1; itagSequence <= numberOfColumnValue; ++itagSequence)
+	{
+		wstring columnValue = tableModel_->RetrieveColumnDataAsString(columnIndex, itagSequence);
+		columnValues += columnValue;
+		if (numberOfColumnValue != itagSequence)
+		{
+			columnValues += L"; ";
+		}
+	}
+
+	return columnValues;
+}
+
+LRESULT CDetailDialog::OnCopyAllButtonClicked(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	CString copyText;
 	for (int i = 0; i < detailListView_.GetItemCount(); ++i)

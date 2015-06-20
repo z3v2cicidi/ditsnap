@@ -9,40 +9,24 @@ namespace EseDataAccess
 
 class CTableListView;
 
-class CDetailDialog : public CDialogImpl<CDetailDialog>,
-                      public CMessageFilter, public CIdleHandler
+class CDetailDialog : public CDialogImpl<CDetailDialog>
 {
 public:
-	enum
-	{
-		IDD = IDD_DETAIL_DIALOG
-	};
+	enum { IDD = IDD_DETAIL_DIALOG };
 
-	virtual BOOL PreTranslateMessage(MSG* pMsg) override;
-
-	virtual BOOL OnIdle() override;
-
-	BEGIN_MSG_MAP(CDetailDialog)
+	BEGIN_MSG_MAP_EX(CDetailDialog)
 		MSG_WM_INITDIALOG(OnInitDialog)
-		MSG_WM_DESTROY(OnDestroy)
-		COMMAND_ID_HANDLER_EX(IDC_OK_BUTTON, OnOK)
 		COMMAND_ID_HANDLER_EX(IDCANCEL, OnCancel)
-		COMMAND_ID_HANDLER_EX(IDC_CHECK1, OnCheck);
-		COMMAND_HANDLER(IDC_BUTTON_COPYALL, BN_CLICKED, OnBnClickedButtonCopyall)
-		END_MSG_MAP()
+		COMMAND_ID_HANDLER_EX(IDC_CHECK1, OnShowAllCheckBoxToggled);
+		COMMAND_HANDLER_EX(IDC_BUTTON_COPYALL, BN_CLICKED, OnCopyAllButtonClicked)
+	END_MSG_MAP()
 
 	CDetailDialog(ITableModel* tableModel, CTableListView* parent, int rowIndex);
 	~CDetailDialog();
-
-	BOOL OnInitDialog(CWindow wndFocus, LPARAM lInitParam);
-
-	void OnDestroy();
-
-	void OnOK(UINT uNotifyCode, int nID, CWindow wndCtl);
-
+	LRESULT OnInitDialog(HWND hWnd, LPARAM lParam);
 	void OnCancel(UINT uNotifyCode, int nID, CWindow wndCtl);
-
-	void OnCheck(UINT uNotifyCode, int nID, CWindow wndCtl);
+	void OnShowAllCheckBoxToggled(UINT uNotifyCode, int nID, CWindow wndCtl);
+	LRESULT OnCopyAllButtonClicked(UINT uNotifyCode, int nID, CWindow wndCtl);
 
 private:
 	ITableModel* tableModel_;
@@ -54,7 +38,7 @@ private:
 
 	void SetupTopLabel();
 	void SetupListItems();
-	LRESULT OnBnClickedButtonCopyall(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+	wstring GetColumnValueString(uint columnIndex);
 
 	DISALLOW_COPY_AND_ASSIGN(CDetailDialog);
 };

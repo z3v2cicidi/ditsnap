@@ -18,7 +18,7 @@ public:
 	BEGIN_MSG_MAP(CSnapshotWizardPage1)
 		MSG_WM_INITDIALOG(OnInitDialog)
 		CHAIN_MSG_MAP(CPropertyPageImpl<CSnapshotWizardPage1>)
-		END_MSG_MAP()
+	END_MSG_MAP()
 
 	BOOL OnInitDialog(CWindow wndFocus, LPARAM lInitParam);
 	LRESULT OnWizardNext();
@@ -51,7 +51,7 @@ public:
 
 	BEGIN_MSG_MAP(CSnapshotWizardPage2)
 		CHAIN_MSG_MAP(CPropertyPageImpl<CSnapshotWizardPage2>)
-		END_MSG_MAP()
+	END_MSG_MAP()
 
 	BOOL OnSetActive();
 
@@ -77,7 +77,7 @@ public:
 
 	BEGIN_MSG_MAP(CSnapshotWizard)
 		CHAIN_MSG_MAP(CPropertySheetImpl<CSnapshotWizard>)
-		END_MSG_MAP()
+	END_MSG_MAP()
 
 	//It is the client's responsibility that the return string should be deleted.
 	wchar_t* GetSnapshotFilePath()

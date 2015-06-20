@@ -5,11 +5,6 @@
 
 using namespace EseDataAccess;
 
-BOOL CDbTreeView::PreTranslateMessage(MSG* pMsg)
-{
-	return FALSE;
-}
-
 CDbTreeView::CDbTreeView(ITableController* tableController,
                          ITableModel* tableModel)
 	: tableController_(tableController),

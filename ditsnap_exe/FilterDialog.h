@@ -14,7 +14,7 @@ public:
 		MSG_WM_INITDIALOG(OnInitDialog)
 		COMMAND_ID_HANDLER_EX(IDOK, OnOK)
 		COMMAND_ID_HANDLER_EX(IDCANCEL, OnCancel)
-		END_MSG_MAP()
+	END_MSG_MAP()
 
 	CFilterDialog(CTableListView* mainListView);
 

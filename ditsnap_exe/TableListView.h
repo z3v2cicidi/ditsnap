@@ -19,11 +19,6 @@ public:
 
 	DECLARE_WND_SUPERCLASS(nullptr, CListViewCtrl::GetWndClassName())
 
-	BOOL PreTranslateMessage(MSG* pMsg)
-	{
-		return FALSE;
-	}
-
 	BEGIN_MSG_MAP_EX(CTableListView)
 		MSG_WM_CREATE(OnCreate)
 		REFLECTED_NOTIFY_CODE_HANDLER_EX(NM_DBLCLK, OnListDblClick)
