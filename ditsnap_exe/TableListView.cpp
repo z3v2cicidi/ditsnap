@@ -89,17 +89,10 @@ void CTableListView::LoadTable()
 		}
 		while (eseDbManager_->MoveNextRecord());
 	}
-	catch (EseException& e)
+	catch (runtime_error& e)
 	{
-		if (-1603 != e.GetErrorCode())
-		{
-			// Handle errors other than -1603 (no record warning)
-			CString errorMessage;
-			errorMessage.Format(L"Error Code : %d\n%s", e.GetErrorCode(), e.GetErrorMessage().c_str());
-			MessageBox(errorMessage, L"Ditsnap", MB_ICONWARNING | MB_OK);
-		}
+		MessageBoxA(nullptr, e.what(), "Ditsnap", MB_ICONWARNING | MB_OK);
 	}
-	return;
 }
 
 void CTableListView::LoadDatatable()
@@ -147,11 +140,9 @@ void CTableListView::LoadDatatable()
 		}
 		while (eseDbManager_->MoveNextRecord());
 	}
-	catch (EseException& e)
+	catch (runtime_error& e)
 	{
-		CString errorMessage;
-		errorMessage.Format(L"Error Code : %d\n%s", e.GetErrorCode(), e.GetErrorMessage().c_str());
-		MessageBox(errorMessage, L"Ditsnap", MB_ICONWARNING | MB_OK);
+		MessageBoxA(nullptr, e.what(), "Ditsnap", MB_ICONWARNING | MB_OK);
 	}
 	return;
 }
@@ -196,11 +187,9 @@ void CTableListView::FilterTable(int filterFlag)
 		}
 		while (eseDbManager_->MoveNextRecord());
 	}
-	catch (EseException& e)
+	catch (runtime_error& e)
 	{
-		CString errorMessage;
-		errorMessage.Format(L"Error Code : %d\n%s", e.GetErrorCode(), e.GetErrorMessage().c_str());
-		MessageBox(errorMessage, L"Ditsnap", MB_ICONWARNING | MB_OK);
+		MessageBoxA(nullptr, e.what(), "Ditsnap", MB_ICONWARNING | MB_OK);
 		return;
 	}
 
@@ -235,11 +224,9 @@ void CTableListView::FilterTable(int filterFlag)
 		}
 		while (eseDbManager_->MoveNextRecord());
 	}
-	catch (EseException& e)
+	catch (runtime_error& e)
 	{
-		CString errorMessage;
-		errorMessage.Format(L"Error Code : %d\n%s", e.GetErrorCode(), e.GetErrorMessage().c_str());
-		MessageBox(errorMessage, L"Ditsnap", MB_ICONWARNING | MB_OK);
+		MessageBoxA(nullptr, e.what(), "Ditsnap", MB_ICONWARNING | MB_OK);
 		return;
 	}
 }
@@ -328,11 +315,9 @@ bool CTableListView::MapColumnNameToColumnIndex(map<wstring, int>* pColumnMap)
 			pColumnMap->insert(pair<wstring, int>(wstring(columnName), columnIndex));
 		}
 	}
-	catch (EseException& e)
+	catch (runtime_error& e)
 	{
-		CString errorMessage;
-		errorMessage.Format(L"Error Code : %d\n%s", e.GetErrorCode(), e.GetErrorMessage().c_str());
-		MessageBox(errorMessage, L"Ditsnap", MB_ICONWARNING | MB_OK);
+		MessageBoxA(NULL, e.what(), "Ditsnap", MB_ICONWARNING | MB_OK);
 		return FALSE;
 	}
 	return TRUE;

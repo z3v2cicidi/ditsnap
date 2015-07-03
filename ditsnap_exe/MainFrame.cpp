@@ -3,13 +3,12 @@
 #include "SnapshotWizard.h"
 #include "AboutDlg.h"
 #include "FilterDialog.h"
-#include "../EseDataAccess/EseDataAccess.h"
 
 using namespace EseDataAccess;
 
 CMainFrame::CMainFrame(EseDbManager* eseDbManager)
-	: dbTreeView_(CDbTreeView(eseDbManager)),
-	  tableListView_(CTableListView(eseDbManager)),
+	: tableListView_(CTableListView(eseDbManager)),
+	  dbTreeView_(CDbTreeView(eseDbManager)),
 	  eseDbManager_(eseDbManager)
 {
 }
@@ -58,11 +57,9 @@ void CMainFrame::OnFileOpen(UINT uCode, int nID, HWND hwndCtrl)
 		{
 			eseDbManager_->OpenFile(fileDialog.m_szFileName);
 		}
-		catch (EseException& e)
+		catch (runtime_error& e)
 		{
-			CString errorMessage;
-			errorMessage.Format(L"Error Code : %d\n%s", e.GetErrorCode(), e.GetErrorMessage().c_str());
-			MessageBox(errorMessage, L"Ditsnap", MB_ICONWARNING | MB_OK);
+			MessageBoxA(nullptr, e.what(), "Ditsnap", MB_ICONWARNING | MB_OK);
 		}
 	}
 }

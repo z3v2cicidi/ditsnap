@@ -3,17 +3,18 @@
 
 namespace EseDataAccess
 {
-#define CHECK_JET_ERR(x) {         \
-	JET_ERR ckerr = ((x));         \
-	if (JET_errSuccess != ckerr)   \
-		throw EseException(ckerr); \
-}
+	string GetJetErrorMessage(JET_ERR err);
+
+	inline void ThrowOnError(JET_ERR x)
+	{
+		if (x != JET_errSuccess)
+			throw std::runtime_error(GetJetErrorMessage(x));
+	}	
 
 	class EseInstance;
 	class EseDatabase;
 	class EseTable;
 	class EseColumn;
-	class EseException;
 
 	class EseInstance
 	{
@@ -144,26 +145,6 @@ namespace EseDataAccess
 		DISALLOW_COPY_AND_ASSIGN(EseColumn);
 	};
 
-	class EseException
-	{
-	public:
-		EseException() : err_(E_FAIL)
-		{
-		}
-
-		explicit EseException(int err) : err_(err)
-		{
-		}
-
-		int GetErrorCode() const
-		{
-			return err_;
-		}
-
-		wstring GetErrorMessage();
-
-	private:
-		int err_;
-	};
+	
 } // name space EseDataAccess
 

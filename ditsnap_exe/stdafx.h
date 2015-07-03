@@ -36,6 +36,15 @@ using std::wstring;
 using std::pair;
 using std::vector;
 using std::list;
+using std::runtime_error;
+
+inline const wstring to_w(const char* s)
+{
+	string str(s);
+	wstring w;
+	w.assign(str.begin(), str.end());
+	return w;
+}
 
 typedef unsigned int uint;
 

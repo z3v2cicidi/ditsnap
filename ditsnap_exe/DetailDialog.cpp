@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "DetailDialog.h"
-#include "../EseDataAccess/EseDataAccess.h"
 #include "TableListView.h"
 
 using namespace EseDataAccess;
@@ -42,11 +41,9 @@ LRESULT CDetailDialog::OnInitDialog(HWND hWnd, LPARAM lParam)
 	{
 		eseDbManager_->Move(rowIndex_);
 	}
-	catch (EseException& e)
+	catch (runtime_error& e)
 	{
-		CString errorMessage;
-		errorMessage.Format(L"Error Code : %d\n%s", e.GetErrorCode(), e.GetErrorMessage().c_str());
-		MessageBox(errorMessage, L"Ditsnap", MB_ICONWARNING | MB_OK);
+		MessageBoxA(nullptr, e.what(), "Ditsnap", MB_ICONWARNING | MB_OK);
 	}
 
 	SetupTopLabel();
@@ -76,11 +73,9 @@ void CDetailDialog::SetupTopLabel()
 		wstring rdn(eseDbManager_->RetrieveColumnDataAsString(ATT_RDN));
 		rdnLabel.SetWindowTextW(rdn.c_str());
 	}
-	catch (EseException& e)
+	catch (runtime_error& e)
 	{
-		CString errorMessage;
-		errorMessage.Format(L"Error Code : %d\n%s", e.GetErrorCode(), e.GetErrorMessage().c_str());
-		MessageBox(errorMessage, L"Ditsnap", MB_ICONWARNING | MB_OK);
+		MessageBoxA(nullptr, e.what(), "Ditsnap", MB_ICONWARNING | MB_OK);
 	}
 	return;
 }
@@ -127,11 +122,9 @@ void CDetailDialog::SetupListItems()
 			}
 		}
 	}
-	catch (EseException& e)
+	catch (runtime_error& e)
 	{
-		CString errorMessage;
-		errorMessage.Format(L"Error Code : %d\n%s", e.GetErrorCode(), e.GetErrorMessage().c_str());
-		MessageBox(errorMessage, L"Ditsnap", MB_ICONWARNING | MB_OK);
+		MessageBoxA(nullptr, e.what(), "Ditsnap", MB_ICONWARNING | MB_OK);
 	}
 	return;
 }

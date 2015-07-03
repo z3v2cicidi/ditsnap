@@ -21,7 +21,7 @@ LRESULT CDbTreeView::OnTreeDoubleClick(LPNMHDR pnmh)
 	UINT uFlag;
 	CPoint pt = GetMessagePos();
 	ScreenToClient(&pt);
-	HTREEITEM hItem = HitTest(pt, &uFlag);
+	auto hItem = HitTest(pt, &uFlag);
 	if (hItem == nullptr || !(uFlag & TVHT_ONITEM))
 	{
 		return 0;
@@ -34,11 +34,9 @@ LRESULT CDbTreeView::OnTreeDoubleClick(LPNMHDR pnmh)
 		{
 			eseDbManager_->SetTable(tableName);			
 		}
-		catch (EseException& e)
+		catch (runtime_error& e)
 		{
-			CString errorMessage;
-			errorMessage.Format(L"Error Code : %d\n%s", e.GetErrorCode(), e.GetErrorMessage().c_str());
-			MessageBox(errorMessage, L"Ditsnap", MB_ICONWARNING | MB_OK);
+			MessageBoxA(nullptr, e.what(), "Ditsnap", MB_ICONWARNING | MB_OK);
 		}
 	}
 	return 0;
@@ -52,17 +50,17 @@ void CDbTreeView::LoadEseDbManager()
 	                       RGB( 255, 0, 255 ), IMAGE_BITMAP, LR_CREATEDIBSECTION);
 	this->SetImageList(images);
 
-	HTREEITEM hRootItem = InsertItem(eseDbManager_->GetFilePath().c_str(), 0, 0, TVI_ROOT, TVI_LAST);
+	auto hRootItem = InsertItem(eseDbManager_->GetFilePath().c_str(), 0, 0, TVI_ROOT, TVI_LAST);
 	if (hRootItem != nullptr)
 	{
 		SetItemData(hRootItem, reinterpret_cast<DWORD_PTR>(hRootItem));
 	}
 	try
 	{
-		vector<wstring> tableNames = eseDbManager_->GetTableNames();
+		auto tableNames = eseDbManager_->GetTableNames();
 		for (uint i = 0; i < tableNames.size(); ++i)
 		{
-			HTREEITEM hItem = InsertItem(tableNames[i].c_str(), 1, 1, hRootItem, TVI_LAST);
+			auto hItem = InsertItem(tableNames[i].c_str(), 1, 1, hRootItem, TVI_LAST);
 			if (hItem != nullptr)
 			{
 				SetItemData(hItem, reinterpret_cast<DWORD_PTR>(hItem));
@@ -70,11 +68,8 @@ void CDbTreeView::LoadEseDbManager()
 			}
 		}
 	}
-	catch (EseException& e)
+	catch (runtime_error& e)
 	{
-		CString errorMessage;
-		errorMessage.Format(L"Error Code : %d\n%s", e.GetErrorCode(), e.GetErrorMessage().c_str());
-		MessageBox(errorMessage, L"Ditsnap", MB_ICONWARNING | MB_OK);
+		MessageBoxA(nullptr, e.what(), "Ditsnap", MB_ICONWARNING | MB_OK);
 	}
-	return;
 }
