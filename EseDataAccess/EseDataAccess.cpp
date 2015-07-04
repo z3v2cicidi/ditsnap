@@ -9,7 +9,7 @@ namespace EseDataAccess
 		char jetErrorMessage[512];
 		jetErrorMessage[0] = 0;
 		auto r = JetGetSystemParameter(NULL, JET_sesidNil,
-			JET_paramErrorToString, reinterpret_cast<ULONG_PTR *>(&err), jetErrorMessage, sizeof(jetErrorMessage));
+		                                   JET_paramErrorToString, reinterpret_cast<ULONG_PTR *>(&err), jetErrorMessage, sizeof(jetErrorMessage));
 		if (r == JET_errSuccess)
 		{
 			return string(jetErrorMessage);
@@ -54,11 +54,11 @@ namespace EseDataAccess
 	{
 		const char* instanceName = "ditsnap";
 
-		ThrowOnError( ::JetSetSystemParameter(&jetInstance_, 0,
-			JET_paramDatabasePageSize, pageSize_, NULL) );
-		ThrowOnError( ::JetCreateInstance(&jetInstance_, instanceName) );
-		ThrowOnError( ::JetInit(&jetInstance_) );
-		ThrowOnError( ::JetBeginSession(jetInstance_, &sessionId_, NULL, NULL));
+		ThrowOnError(::JetSetSystemParameter(&jetInstance_, 0,
+		                                     JET_paramDatabasePageSize, pageSize_, NULL));
+		ThrowOnError(::JetCreateInstance(&jetInstance_, instanceName));
+		ThrowOnError(::JetInit(&jetInstance_));
+		ThrowOnError(::JetBeginSession(jetInstance_, &sessionId_, NULL, NULL));
 	}
 
 
@@ -86,10 +86,10 @@ namespace EseDataAccess
 
 	void EseDatabase::Init()
 	{
-		ThrowOnError( ::JetAttachDatabase(parent_->GetSessionId(),
-			dbPath_.c_str(), JET_bitDbReadOnly) );
-		ThrowOnError( ::JetOpenDatabase(parent_->GetSessionId(), dbPath_.c_str(), NULL,
-			&dbId_, JET_bitDbReadOnly) );
+		ThrowOnError(::JetAttachDatabase(parent_->GetSessionId(),
+		                                 dbPath_.c_str(), JET_bitDbReadOnly));
+		ThrowOnError(::JetOpenDatabase(parent_->GetSessionId(), dbPath_.c_str(), NULL,
+		                               &dbId_, JET_bitDbReadOnly));
 		return;
 	}
 
@@ -104,8 +104,8 @@ namespace EseDataAccess
 	{
 		//Get a temporary table which contains all table names.
 		JET_OBJECTLIST objectList = {0};
-		ThrowOnError( ::JetGetObjectInfo(parent_->GetSessionId(), dbId_, JET_objtypTable,
-			NULL, NULL, &objectList, sizeof(JET_OBJECTLIST), JET_ObjInfoList) );
+		ThrowOnError(::JetGetObjectInfo(parent_->GetSessionId(), dbId_, JET_objtypTable,
+		                                NULL, NULL, &objectList, sizeof(JET_OBJECTLIST), JET_ObjInfoList));
 
 		tableCount_ = objectList.cRecord;
 		vector<wstring> tableNames(objectList.cRecord);
@@ -120,8 +120,8 @@ namespace EseDataAccess
 
 			try
 			{
-				ThrowOnError( ::JetRetrieveColumn(parent_->GetSessionId(), objectList.tableid,
-					objectList.columnidobjectname, tableName, JET_cbNameMost, &actualSize, 0, &retInfo) );
+				ThrowOnError(::JetRetrieveColumn(parent_->GetSessionId(), objectList.tableid,
+				                                 objectList.columnidobjectname, tableName, JET_cbNameMost, &actualSize, 0, &retInfo));
 				tableName[actualSize] = NULL;
 
 				wchar_t tableNameAsWideChar[JET_cbNameMost + 1];
@@ -133,7 +133,7 @@ namespace EseDataAccess
 
 				if (objectList.cRecord - 1 != i)
 				{
-					ThrowOnError( ::JetMove(parent_->GetSessionId(), objectList.tableid, JET_MoveNext, 0) );
+					ThrowOnError(::JetMove(parent_->GetSessionId(), objectList.tableid, JET_MoveNext, 0));
 				}
 			}
 			catch (runtime_error&)
@@ -152,8 +152,8 @@ namespace EseDataAccess
 		if (-1 == tableCount_)
 		{
 			JET_OBJECTLIST objectList;
-			ThrowOnError( ::JetGetObjectInfo(parent_->GetSessionId(), dbId_, JET_objtypTable,
-				NULL, NULL, &objectList, sizeof(JET_OBJECTLIST), JET_ObjInfoList) );
+			ThrowOnError(::JetGetObjectInfo(parent_->GetSessionId(), dbId_, JET_objtypTable,
+			                                NULL, NULL, &objectList, sizeof(JET_OBJECTLIST), JET_ObjInfoList));
 			tableCount_ = objectList.cRecord;
 			JetCloseTable(parent_->GetSessionId(), objectList.tableid);
 		}
@@ -186,15 +186,15 @@ namespace EseDataAccess
 
 		try
 		{
-			ThrowOnError( ::JetOpenTable(sessionId_, dbId_, tableName_.c_str(), NULL, 0,
-				JET_bitTableReadOnly, &tableId_) );
+			ThrowOnError(::JetOpenTable(sessionId_, dbId_, tableName_.c_str(), NULL, 0,
+			                            JET_bitTableReadOnly, &tableId_));
 			//This method opens a temporary table that contains column definitions
-			ThrowOnError( ::JetGetTableColumnInfo(sessionId_, tableId_, NULL,
-				&columnList, sizeof(JET_COLUMNLIST), JET_ColInfoList) );
+			ThrowOnError(::JetGetTableColumnInfo(sessionId_, tableId_, NULL,
+			                                     &columnList, sizeof(JET_COLUMNLIST), JET_ColInfoList));
 
 			columns_.reserve(columnList.cRecord);
 
-			ThrowOnError( ::JetMove(sessionId_, columnList.tableid, JET_MoveFirst, 0) );
+			ThrowOnError(::JetMove(sessionId_, columnList.tableid, JET_MoveFirst, 0));
 
 			//Traverse the temporary table
 			JET_ERR ret = 0;
@@ -203,7 +203,7 @@ namespace EseDataAccess
 				columns_.push_back(RetrieveColumnDefinition(columnList));
 			}
 			while (JET_errSuccess == (ret = JetMove(sessionId_,
-			                                          columnList.tableid, JET_MoveNext, 0)));
+			                                        columnList.tableid, JET_MoveNext, 0)));
 
 			//if cursor don't reach to the end of records, throw exception
 			if (ret != JET_errNoCurrentRecord)
@@ -238,26 +238,26 @@ namespace EseDataAccess
 		bool isUnicode = true;
 
 		//Get column name 
-		ThrowOnError( ::JetRetrieveColumn(sessionId_, columnList.tableid,
-			columnList.columnidBaseColumnName, &columnName,
-			JET_cbColumnMost, &actualSize, 0, &retInfo) );
+		ThrowOnError(::JetRetrieveColumn(sessionId_, columnList.tableid,
+		                                 columnList.columnidBaseColumnName, &columnName,
+		                                 JET_cbColumnMost, &actualSize, 0, &retInfo));
 
 		columnName[actualSize] = NULL; //To be null-terminated string 
 
 		//Get column type		
-		ThrowOnError( ::JetRetrieveColumn(sessionId_, columnList.tableid,
-			columnList.columnidcoltyp, &colType,
-			JET_coltypLong, &actualSize, 0, &retInfo) );
+		ThrowOnError(::JetRetrieveColumn(sessionId_, columnList.tableid,
+		                                 columnList.columnidcoltyp, &colType,
+		                                 JET_coltypLong, &actualSize, 0, &retInfo));
 
 		//Get column ID
-		ThrowOnError( ::JetRetrieveColumn(sessionId_, columnList.tableid,
-			columnList.columnidcolumnid, &columnId,
-			JET_coltypLong, &actualSize, 0, &retInfo) );
+		ThrowOnError(::JetRetrieveColumn(sessionId_, columnList.tableid,
+		                                 columnList.columnidcolumnid, &columnId,
+		                                 JET_coltypLong, &actualSize, 0, &retInfo));
 
 		// Is Unicode?
-		ThrowOnError( ::JetRetrieveColumn(sessionId_, columnList.tableid,
-			columnList.columnidCp, &codePage,
-			JET_coltypLong, &actualSize, 0, &retInfo) );
+		ThrowOnError(::JetRetrieveColumn(sessionId_, columnList.tableid,
+		                                 columnList.columnidCp, &codePage,
+		                                 JET_coltypLong, &actualSize, 0, &retInfo));
 		if (1252 == codePage)
 		{
 			isUnicode = false;
@@ -268,7 +268,7 @@ namespace EseDataAccess
 
 	void EseTable::MoveFirstRecord()
 	{
-		ThrowOnError( ::JetMove(sessionId_, tableId_, JET_MoveFirst, 0) );
+		ThrowOnError(::JetMove(sessionId_, tableId_, JET_MoveFirst, 0));
 		return;
 	}
 
@@ -284,38 +284,35 @@ namespace EseDataAccess
 
 	void EseTable::Move(uint rowIndex)
 	{
-		ThrowOnError( ::JetMove(sessionId_, tableId_, JET_MoveFirst, 0) );
-		ThrowOnError( ::JetMove(sessionId_, tableId_, rowIndex, 0) );
+		ThrowOnError(::JetMove(sessionId_, tableId_, JET_MoveFirst, 0));
+		ThrowOnError(::JetMove(sessionId_, tableId_, rowIndex, 0));
 		return;
 	}
 
-	void* EseTable::RetrieveColumnData(uint columnIndex, uint itagSequence, uint* pDataSizeInByte)
+	vector<char> EseTable::RetrieveColumnData(uint columnIndex, uint itagSequence)
 	{
 		unsigned long actualSize = 0;
-		JET_RETINFO retInfo = { 0 };
+		JET_RETINFO retInfo{0};
 		retInfo.cbStruct = sizeof(JET_RETINFO);
 		retInfo.itagSequence = itagSequence;
 
-		JET_ERR error = ::JetRetrieveColumn(sessionId_, tableId_, columns_[columnIndex]->GetId(),
-			NULL, 0, &actualSize, 0, &retInfo);
-		if (NULL == actualSize)
+		::JetRetrieveColumn(sessionId_, tableId_, columns_[columnIndex]->GetId(),
+		                                  nullptr, 0, &actualSize, 0, &retInfo);
+		if (actualSize == 0)
 		{
-			*pDataSizeInByte = actualSize;
-			return NULL;
+			return vector<char>{};
 		}
 
-		//adding sizeof(wchar_t) for not-null-terminated string
-		void* pvData = new BYTE[actualSize + sizeof(wchar_t)];
-		error = ::JetRetrieveColumn(sessionId_, tableId_, columns_[columnIndex]->GetId(),
-			pvData, actualSize + sizeof(wchar_t), 0, 0, &retInfo);
-		if (JET_errSuccess != error)
+		unique_ptr<char[]> buf(new char[actualSize]);
+		auto jeterr = ::JetRetrieveColumn(sessionId_, tableId_, columns_[columnIndex]->GetId(),
+		                             buf.get(), actualSize, nullptr, 0, &retInfo);
+		if (JET_errSuccess != jeterr)
 		{
-			delete[] pvData;
-			throw runtime_error(GetJetErrorMessage(error));
+			throw runtime_error(GetJetErrorMessage(jeterr));
 		}
 
-		*pDataSizeInByte = actualSize;
-		return pvData;
+		auto v = vector<char>(buf.get(), buf.get() + actualSize);
+		return v;
 	}
 
 	int EseTable::CountColumnValue(uint columnIndex) const
@@ -335,202 +332,91 @@ namespace EseDataAccess
 
 	wstring EseTable::RetrieveColumnDataAsString(uint columnIndex, uint itagSequence)
 	{
-		const uint bufferSize = 1024 * 4;
-		const uint maxBufferSize = 1024 * 16;
-		wchar_t* returnString = new wchar_t[bufferSize / sizeof(wchar_t)];
-		uint dataSize = 0;
-		void* pvData = nullptr;
-		int error = E_FAIL;
-
-		try
+		auto v = RetrieveColumnData(columnIndex, itagSequence);
+		if (v.size() == 0)
 		{
-			pvData = RetrieveColumnData(columnIndex, itagSequence, &dataSize);
+			return wstring(L"");
+		}
 
-			if (NULL == pvData)
-			{
-				if (-1 == swprintf_s(returnString, bufferSize / sizeof(wchar_t), L""))
-				{
-					throw runtime_error(to_string(GetLastError()));
-				}
-				return returnString;
+		switch (columns_[columnIndex]->GetType())
+		{
+		case JET_coltypNil:
+			return wstring(L"");
+
+		case JET_coltypBit: /* True or False, Never NULL */
+			return to_wstring(*reinterpret_cast<int*>(v.data()));
+
+		case JET_coltypUnsignedByte: /* 1-byte integer, unsigned */
+			return to_wstring(*reinterpret_cast<uint*>(v.data()));
+
+		case JET_coltypShort: /* 2-byte integer, signed */
+			return to_wstring(*reinterpret_cast<int*>(v.data()));
+
+		case JET_coltypLong: /* 4-byte integer, signed */
+			return to_wstring(*reinterpret_cast<long*>(v.data()));
+
+		case JET_coltypCurrency: /* 8 byte integer, signed */
+			return to_wstring(*reinterpret_cast<long long int*>(v.data()));
+
+		case JET_coltypIEEESingle: /* 4-byte IEEE single precision */
+			return to_wstring(*reinterpret_cast<float*>(v.data()));
+
+		case JET_coltypIEEEDouble: /* 8-byte IEEE double precision */
+			return to_wstring(*reinterpret_cast<double*>(v.data()));
+
+		case JET_coltypDateTime:
+			{/* This column type is identical to the variant date type.*/
+				SYSTEMTIME st{};
+				VariantTimeToSystemTime(*reinterpret_cast<double*>(v.data()), &st);
+				std::wstringstream ss;
+				ss << st.wYear << L"-"
+					<< std::setw(2) << std::setfill(L'0') << st.wMonth << L"-"
+					<< std::setw(2) << std::setfill(L'0') << st.wDay << L" "
+					<< std::setw(2) << std::setfill(L'0') << st.wHour << L":"
+					<< std::setw(2) << std::setfill(L'0') << st.wMinute << L":"
+					<< std::setw(2) << std::setfill(L'0') << st.wSecond << L"."
+					<< std::setw(3) << std::setfill(L'0') << st.wMilliseconds;
+				return ss.str();
 			}
-
-			switch (columns_[columnIndex]->GetType())
+		case JET_coltypBinary: /* Binary data, < 255 bytes */
+		case JET_coltypLongBinary: /* Binary data, long value */
 			{
-			case JET_coltypNil:
-				error = swprintf_s(returnString, bufferSize / sizeof(wchar_t), L"");
-				break;
-
-			case JET_coltypBit: /* True or False, Never NULL */
-				error = swprintf_s(returnString, bufferSize / sizeof(wchar_t), L"%d",
-				                   *reinterpret_cast<int*>(pvData));
-				break;
-
-			case JET_coltypUnsignedByte: /* 1-byte integer, unsigned */
-				error = swprintf_s(returnString, bufferSize / sizeof(wchar_t), L"%u",
-				                   *reinterpret_cast<uint*>(pvData));
-				break;
-
-			case JET_coltypShort: /* 2-byte integer, signed */
-				error = swprintf_s(returnString, bufferSize / sizeof(wchar_t), L"%d",
-				                   *reinterpret_cast<int*>(pvData));
-				break;
-
-			case JET_coltypLong: /* 4-byte integer, signed */
-				error = swprintf_s(returnString, bufferSize / sizeof(wchar_t), L"%ld",
-				                   *reinterpret_cast<long*>(pvData));
-				break;
-
-			case JET_coltypCurrency: /* 8 byte integer, signed */
-				error = swprintf_s(returnString, bufferSize / sizeof(wchar_t), L"%lld",
-				                   *reinterpret_cast<long long int*>(pvData));
-				break;
-
-			case JET_coltypIEEESingle: /* 4-byte IEEE single precision */
-				error = swprintf_s(returnString, bufferSize / sizeof(wchar_t), L"%f",
-				                   *reinterpret_cast<float*>(pvData));
-				break;
-
-			case JET_coltypIEEEDouble: /* 8-byte IEEE double precision */
-				error = swprintf_s(returnString, bufferSize / sizeof(wchar_t), L"%f",
-				                   *reinterpret_cast<double*>(pvData));
-				break;
-
-			case JET_coltypDateTime:
-				{/* This column type is identical to the variant date type.*/
-					SYSTEMTIME systemTime = {0};
-					VariantTimeToSystemTime(*reinterpret_cast<double*>(pvData), &systemTime);
-					error = swprintf_s(returnString, bufferSize / sizeof(wchar_t), L"%u/%u/%u %u:%u %ums",
-					                   systemTime.wMonth, systemTime.wDay, systemTime.wYear,
-					                   systemTime.wHour, systemTime.wMinute, systemTime.wMilliseconds);
-					break;
-				}
-			case JET_coltypBinary: /* Binary data, < 255 bytes */
-				//Like 00 03 1C FF...
-				for (size_t i = 0; i < dataSize; ++i)
+				std::wstringstream ss;
+				for (auto& c : v)
 				{
-					error = swprintf_s(returnString + i * 3, 4, L"%02x ",
-					                   *(reinterpret_cast<BYTE*>(pvData) + i));
-					if (-1 == error)
-					{
-						throw runtime_error(to_string(GetLastError()));
-					}
+					ss << std::setfill(L'0') << std::setw(2);
+					ss << std::uppercase << std::hex << static_cast<unsigned char>(c) << L" ";
 				}
-				break;
-
-			case JET_coltypText: /* ANSI text, case insensitive, < 255 bytes */
-				AppendNullToEndOfData(pvData, dataSize);
+				return ss.str();
+			}
+		case JET_coltypText: /* ANSI text, case insensitive, < 255 bytes */
+		case JET_coltypLongText: /* ANSI text, long value  */
+			{
 				if (columns_[columnIndex]->IsUnicode())
 				{
-					error = swprintf_s(returnString, bufferSize / sizeof(wchar_t), L"%s",
-					                   reinterpret_cast<wchar_t*>(pvData));
+					// Ensure L'\0' terminated
+					v.push_back(0);
+					v.push_back(0);
+					return wstring{reinterpret_cast<wchar_t*>(v.data())};
 				}
 				else
 				{
-					char tempString[bufferSize];
-					error = sprintf_s(reinterpret_cast<char*>(tempString),
-					                  bufferSize / sizeof(char), "%s", reinterpret_cast<char*>(pvData));
-					if (-1 != error)
-					{
-						wcscpy_s(returnString, bufferSize / sizeof(wchar_t), CA2WEX<bufferSize>(tempString));
-					}
+					// Ensure '\0' terminated
+					v.push_back(0);
+					return wstring(v.begin(), v.end());
 				}
-				break;
-
-			case JET_coltypLongBinary: /* Binary data, long value */
-				if (dataSize * sizeof(wchar_t) * 3 + 2 <= bufferSize)
-				{
-					for (size_t i = 0; i < dataSize; ++i)
-					{
-						error = swprintf_s(returnString + i * 3, 4, L"%02x ",
-						                   *(reinterpret_cast<BYTE*>(pvData) + i));
-						if (-1 == error)
-						{
-							throw runtime_error(to_string(GetLastError()));
-						}
-					}
-				}
-				else if (dataSize * sizeof(wchar_t) * 3 + 2 < maxBufferSize)
-				{
-					//realloc returnString to expand
-					delete[] returnString;
-					returnString = new wchar_t[dataSize * sizeof(wchar_t) * 3 + 2];
-					for (size_t i = 0; i < dataSize; ++i)
-					{
-						error = swprintf_s(returnString + i * 3, 4, L"%02x ",
-						                   *(reinterpret_cast<BYTE*>(pvData) + i));
-						if (-1 == error)
-						{
-							throw runtime_error(to_string(GetLastError()));
-						}
-					}
-				}
-				else
-				{
-					error = swprintf_s(returnString, bufferSize / sizeof(wchar_t),
-					                   L"Too big binary data to retrieve.");
-				}
-				break;
-
-			case JET_coltypLongText: /* ANSI text, long value  */
-				// TODO: Add if (isUnicode) sentence
-				if (dataSize <= bufferSize - 2)
-				{
-					AppendNullToEndOfData(pvData, dataSize);
-					error = swprintf_s(returnString, bufferSize / sizeof(wchar_t), L"%s",
-					                   reinterpret_cast<wchar_t*>(pvData));
-				}
-				else if (dataSize < maxBufferSize - 2)
-				{
-					AppendNullToEndOfData(pvData, dataSize);
-					//reallocate returnString to expand
-					delete[] returnString;
-					returnString = new wchar_t[dataSize / sizeof(wchar_t) + 2];
-					error = swprintf_s(returnString, dataSize / sizeof(wchar_t) + 2, L"%s",
-					                   reinterpret_cast<wchar_t*>(pvData));
-				}
-				else
-				{
-					error = swprintf_s(returnString, bufferSize / sizeof(wchar_t), L"%s",
-					                   L"Too big binary data to retrieve.");
-				}
-				break;
-			case JET_coltypUnsignedLong:
-				error = swprintf_s(returnString, bufferSize / sizeof(wchar_t), L"%llu",
-					*reinterpret_cast<unsigned long long int*>(pvData));
-				break;
-			case JET_coltypLongLong:
-				error = swprintf_s(returnString, bufferSize / sizeof(wchar_t), L"%lld",
-					*reinterpret_cast<long long int*>(pvData));
-				break;
-			case JET_coltypGUID:
-				error = swprintf_s(returnString, bufferSize / sizeof(wchar_t), L"(GUID)");
-				break;
-			case JET_coltypUnsignedShort:
-				error = swprintf_s(returnString, bufferSize / sizeof(wchar_t), L"%hu",
-					*reinterpret_cast<long long int*>(pvData));
-				break;
-			default:
-				error = swprintf_s(returnString, bufferSize / sizeof(wchar_t), L"unknown type");
-				break;
 			}
-
-			if (-1 == error)
-			{
-				throw runtime_error(to_string(GetLastError()));
-			}
+		case JET_coltypUnsignedLong:
+			return to_wstring(*reinterpret_cast<unsigned long long int*>(v.data()));
+		case JET_coltypLongLong:
+			return to_wstring(*reinterpret_cast<long long int*>(v.data()));
+		case JET_coltypGUID:
+			return wstring(L"(GUID type)");
+		case JET_coltypUnsignedShort:
+			return to_wstring(*reinterpret_cast<unsigned short*>(v.data()));
+		default:
+			return wstring(L"unknown type");
 		}
-		catch (runtime_error&)
-		{
-			delete[] returnString;
-			delete[] pvData;
-			throw;
-		}
-
-		wstring returnStdString(returnString);
-		delete[] returnString;
-		delete[] pvData;
-		return returnStdString;
 	}
 
 	uint EseTable::GetColumnCount() const
@@ -596,7 +482,5 @@ namespace EseDataAccess
 
 	//	return errorMessage;
 	//}
-
-
-
 } // name space EseDataAccess
+

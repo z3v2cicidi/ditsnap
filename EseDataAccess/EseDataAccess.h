@@ -101,8 +101,7 @@ namespace EseDataAccess
 		const string tableName_;
 		vector<EseColumn*> columns_;
 		EseColumn* RetrieveColumnDefinition(const JET_COLUMNLIST& columnList);
-		void* RetrieveColumnData(uint columnIndex, uint itagSequence,
-		                         uint* pDataSizeInByte);
+		vector<char> RetrieveColumnData(uint columnIndex, uint itagSequence);
 		void AppendNullToEndOfData(void* pvData, uint dataSizeInByte);
 		DISALLOW_COPY_AND_ASSIGN(EseTable);
 	};

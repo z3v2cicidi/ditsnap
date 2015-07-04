@@ -7,6 +7,8 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <sstream>
+#include <iomanip>
 
 #include "windows.h"
 #include "esent.h"
@@ -16,6 +18,7 @@ using std::string;
 using std::wstring;
 using std::runtime_error;
 using std::to_string;
+using std::to_wstring;
 using std::unique_ptr;
 
 typedef unsigned int uint;
