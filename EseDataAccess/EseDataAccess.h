@@ -8,7 +8,7 @@ namespace EseDataAccess
 	inline void ThrowOnError(JET_ERR x)
 	{
 		if (x != JET_errSuccess)
-			throw std::runtime_error(GetJetErrorMessage(x));
+			throw runtime_error(GetJetErrorMessage(x));
 	}	
 
 	class EseInstance;
@@ -19,7 +19,7 @@ namespace EseDataAccess
 	class EseInstance
 	{
 	public:
-		~EseInstance(void);
+		~EseInstance();
 		static EseInstance* CreateInstance(uint pageSize = DEFAULT_ESE_PAGE_SIZE);
 		EseDatabase* OpenDatabase(const wstring dbPath);
 
@@ -43,7 +43,7 @@ namespace EseDataAccess
 		JET_SESID sessionId_;
 		uint pageSize_;
 
-		EseInstance(void);
+		EseInstance();
 		explicit EseInstance(uint pageSize);
 		void Init();
 
@@ -54,14 +54,14 @@ namespace EseDataAccess
 	{
 	public:
 		EseDatabase(const EseInstance* const parent, const string& dbPath);
-		~EseDatabase(void);
+		~EseDatabase();
 		void Init();
 		EseTable* OpenTable(const wstring tableName);
 		vector<wstring> GetTableNames();
 
-		const EseInstance* GetParent() const
+		const EseInstance* GetEseInstance() const
 		{
-			return parent_;
+			return eseInstance_;
 		};
 
 		JET_DBID GetDbId() const
@@ -70,7 +70,8 @@ namespace EseDataAccess
 		};
 
 	private:
-		const EseInstance* const parent_;
+		const EseInstance* const eseInstance_;
+		const JET_SESID sessionId_;
 		JET_DBID dbId_;
 		const string dbPath_;
 		int tableCount_;
@@ -81,7 +82,7 @@ namespace EseDataAccess
 	class EseTable
 	{
 	public:
-		EseTable(const EseDatabase* const parent, const string& tableName);
+		EseTable(const EseDatabase* const eseDatabase, const string& tableName);
 		~EseTable();
 		void Init();
 		void MoveFirstRecord();
@@ -93,7 +94,7 @@ namespace EseDataAccess
 		wstring GetColumnName(uint columnIndex) const;
 
 	private:
-		const EseDatabase* const parent_;
+		const EseDatabase* const eseDatabase_;
 		const JET_SESID sessionId_;
 		const JET_DBID dbId_;
 		JET_TABLEID tableId_;
@@ -140,8 +141,6 @@ namespace EseDataAccess
 		bool isUnicode_;
 
 		DISALLOW_COPY_AND_ASSIGN(EseColumn);
-	};
-
-	
+	};	
 } // name space EseDataAccess
 

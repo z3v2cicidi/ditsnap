@@ -2,14 +2,11 @@
 #define WIN32_LEAN_AND_MEAN		
 #include <stdio.h>
 #include <tchar.h>
-
-#include "stdlib.h"
 #include <vector>
 #include <string>
 #include <memory>
 #include <sstream>
 #include <iomanip>
-
 #include "windows.h"
 #include "esent.h"
 

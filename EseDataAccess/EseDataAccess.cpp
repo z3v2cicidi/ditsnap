@@ -18,7 +18,7 @@ namespace EseDataAccess
 	}
 
 	EseInstance::EseInstance() : jetInstance_(0), sessionId_(0),
-	                                 pageSize_(DEFAULT_ESE_PAGE_SIZE)
+	                             pageSize_(DEFAULT_ESE_PAGE_SIZE)
 	{
 	}
 
@@ -51,7 +51,7 @@ namespace EseDataAccess
 	{
 		auto instanceName = "ditsnap";
 		ThrowOnError(JetSetSystemParameter(&jetInstance_, 0,
-		                                     JET_paramDatabasePageSize, pageSize_, nullptr));
+		                                   JET_paramDatabasePageSize, pageSize_, nullptr));
 		ThrowOnError(JetCreateInstance(&jetInstance_, instanceName));
 		ThrowOnError(JetInit(&jetInstance_));
 		ThrowOnError(JetBeginSession(jetInstance_, &sessionId_, nullptr, nullptr));
@@ -64,8 +64,9 @@ namespace EseDataAccess
 		return db;
 	}
 
-	EseDatabase::EseDatabase(const EseInstance* const parent, const string& dbPath)
-		: parent_(parent), dbId_(0), dbPath_(dbPath), tableCount_(-1)
+	EseDatabase::EseDatabase(const EseInstance* const eseInstance, const string& dbPath)
+		: eseInstance_(eseInstance), sessionId_(eseInstance->GetSessionId()), 
+		dbId_(0), dbPath_(dbPath), tableCount_(-1)
 	{
 	}
 
@@ -73,18 +74,18 @@ namespace EseDataAccess
 	{
 		if (dbId_ != 0)
 		{
-			JetCloseDatabase(parent_->GetSessionId(), dbId_, 0);
+			JetCloseDatabase(sessionId_, dbId_, 0);
 		}
 
-		JetDetachDatabase(parent_->GetSessionId(), dbPath_.c_str());
+		JetDetachDatabase(sessionId_, dbPath_.c_str());
 	}
 
 	void EseDatabase::Init()
 	{
-		ThrowOnError(JetAttachDatabase(parent_->GetSessionId(),
-		                                 dbPath_.c_str(), JET_bitDbReadOnly));
-		ThrowOnError(JetOpenDatabase(parent_->GetSessionId(), dbPath_.c_str(), nullptr,
-		                               &dbId_, JET_bitDbReadOnly));
+		ThrowOnError(JetAttachDatabase(sessionId_,
+		                               dbPath_.c_str(), JET_bitDbReadOnly));
+		ThrowOnError(JetOpenDatabase(sessionId_, dbPath_.c_str(), nullptr,
+		                             &dbId_, JET_bitDbReadOnly));
 	}
 
 	EseTable* EseDatabase::OpenTable(const wstring tableName)
@@ -98,8 +99,8 @@ namespace EseDataAccess
 	{
 		//Get a temporary table which contains all table names.
 		JET_OBJECTLIST tableList = {0};
-		ThrowOnError(JetGetObjectInfo(parent_->GetSessionId(), dbId_, JET_objtypTable,
-		                                nullptr, nullptr, &tableList, sizeof(JET_OBJECTLIST), JET_ObjInfoList));
+		ThrowOnError(JetGetObjectInfo(sessionId_, dbId_, JET_objtypTable,
+		                              nullptr, nullptr, &tableList, sizeof(JET_OBJECTLIST), JET_ObjInfoList));
 		tableCount_ = tableList.cRecord;
 		vector<wstring> tableNames(tableList.cRecord);
 		for (auto& tableName : tableNames)
@@ -111,29 +112,29 @@ namespace EseDataAccess
 			vector<char> tableNameBuffer(JET_cbNameMost + 1);
 			try
 			{
-				ThrowOnError(JetRetrieveColumn(parent_->GetSessionId(), tableList.tableid,
-					tableList.columnidobjectname, tableNameBuffer.data(), JET_cbNameMost, &actualSize, 0, &retInfo));
+				ThrowOnError(JetRetrieveColumn(sessionId_, tableList.tableid,
+				                               tableList.columnidobjectname, tableNameBuffer.data(), JET_cbNameMost, &actualSize, 0, &retInfo));
 				tableNameBuffer[actualSize] = NULL;
 				tableName = wstring(tableNameBuffer.begin(), tableNameBuffer.end());
-				auto r = JetMove(parent_->GetSessionId(), tableList.tableid, JET_MoveNext, 0);
+				auto r = JetMove(sessionId_, tableList.tableid, JET_MoveNext, 0);
 				if (r == JET_errNoCurrentRecord)
 					break;
-				ThrowOnError(r);				
+				ThrowOnError(r);
 			}
 			catch (runtime_error&)
 			{
-				JetCloseTable(parent_->GetSessionId(), tableList.tableid);
+				JetCloseTable(sessionId_, tableList.tableid);
 				throw;
 			}
 		}
 
-		JetCloseTable(parent_->GetSessionId(), tableList.tableid);
+		JetCloseTable(sessionId_, tableList.tableid);
 		return tableNames;
 	}
-	
-	EseTable::EseTable(const EseDatabase* const parent, const string& tableName)
-		: parent_(parent), sessionId_(parent->GetParent()->GetSessionId()),
-		  dbId_(parent->GetDbId()), tableId_(0), tableName_(tableName)
+
+	EseTable::EseTable(const EseDatabase* const eseDatabase, const string& tableName)
+		: eseDatabase_(eseDatabase), sessionId_(eseDatabase->GetEseInstance()->GetSessionId()),
+		  dbId_(eseDatabase->GetDbId()), tableId_(0), tableName_(tableName)
 	{
 	}
 
@@ -152,15 +153,15 @@ namespace EseDataAccess
 
 	void EseTable::Init()
 	{
-		JET_COLUMNLIST columnList {0};
+		JET_COLUMNLIST columnList{0};
 
 		try
 		{
 			ThrowOnError(JetOpenTable(sessionId_, dbId_, tableName_.c_str(), nullptr, 0,
-			                            JET_bitTableReadOnly, &tableId_));
+			                          JET_bitTableReadOnly, &tableId_));
 			// Open a temporary table that contains column definitions
 			ThrowOnError(JetGetTableColumnInfo(sessionId_, tableId_, nullptr,
-			                                     &columnList, sizeof(JET_COLUMNLIST), JET_ColInfoList));
+			                                   &columnList, sizeof(JET_COLUMNLIST), JET_ColInfoList));
 			columns_.reserve(columnList.cRecord);
 			ThrowOnError(JetMove(sessionId_, columnList.tableid, JET_MoveFirst, 0));
 			JET_ERR ret = 0;
@@ -196,28 +197,28 @@ namespace EseDataAccess
 		JET_RETINFO retInfo = {0};
 		retInfo.cbStruct = sizeof(JET_RETINFO);
 		retInfo.itagSequence = 1;
-		
+
 		//Get column name 
 		char columnName[JET_cbColumnMost + 1];
 		ThrowOnError(JetRetrieveColumn(sessionId_, columnList.tableid,
-		                                 columnList.columnidBaseColumnName, &columnName,
-		                                 JET_cbColumnMost, &actualSize, 0, &retInfo));
-		columnName[actualSize] = NULL; 
+		                               columnList.columnidBaseColumnName, &columnName,
+		                               JET_cbColumnMost, &actualSize, 0, &retInfo));
+		columnName[actualSize] = NULL;
 		//Get column type		
 		JET_COLTYP colType = 0;
 		ThrowOnError(JetRetrieveColumn(sessionId_, columnList.tableid,
-		                                 columnList.columnidcoltyp, &colType,
-		                                 JET_coltypLong, &actualSize, 0, &retInfo));
+		                               columnList.columnidcoltyp, &colType,
+		                               JET_coltypLong, &actualSize, 0, &retInfo));
 		//Get column ID
 		JET_COLUMNID columnId = 0;
 		ThrowOnError(JetRetrieveColumn(sessionId_, columnList.tableid,
-		                                 columnList.columnidcolumnid, &columnId,
-		                                 JET_coltypLong, &actualSize, 0, &retInfo));
+		                               columnList.columnidcolumnid, &columnId,
+		                               JET_coltypLong, &actualSize, 0, &retInfo));
 		// Is Unicode?
 		unsigned short codePage = 0;
 		ThrowOnError(JetRetrieveColumn(sessionId_, columnList.tableid,
-		                                 columnList.columnidCp, &codePage,
-		                                 JET_coltypLong, &actualSize, 0, &retInfo));
+		                               columnList.columnidCp, &codePage,
+		                               JET_coltypLong, &actualSize, 0, &retInfo));
 		return new EseColumn(columnId, columnName, colType, codePage != 1252);
 	}
 
@@ -230,7 +231,7 @@ namespace EseDataAccess
 	{
 		auto error = JetMove(sessionId_, tableId_, JET_MoveNext, 0);
 		if (error == JET_errNoCurrentRecord)
-		{ 
+		{
 			return FALSE;
 		}
 
@@ -251,7 +252,7 @@ namespace EseDataAccess
 		retInfo.cbStruct = sizeof(JET_RETINFO);
 		retInfo.itagSequence = itagSequence;
 		JetRetrieveColumn(sessionId_, tableId_, columns_[columnIndex]->GetId(),
-		                                  nullptr, 0, &actualSize, 0, &retInfo);
+		                  nullptr, 0, &actualSize, 0, &retInfo);
 		if (actualSize == 0)
 		{
 			return vector<char>{};
@@ -259,7 +260,7 @@ namespace EseDataAccess
 
 		vector<char> buf(actualSize);
 		auto jeterr = JetRetrieveColumn(sessionId_, tableId_, columns_[columnIndex]->GetId(),
-		                             buf.data(), actualSize, nullptr, 0, &retInfo);
+		                                buf.data(), actualSize, nullptr, 0, &retInfo);
 		if (JET_errSuccess != jeterr)
 		{
 			throw runtime_error(GetJetErrorMessage(jeterr));
@@ -382,7 +383,7 @@ namespace EseDataAccess
 		auto name = columns_[columnIndex]->GetName();
 		return wstring(name.begin(), name.end());
 	}
-	
+
 	EseColumn::EseColumn(uint id, const string& name, uint type, bool isUnicode) :
 		id_(id), name_(name), type_(type), isUnicode_(isUnicode)
 	{
