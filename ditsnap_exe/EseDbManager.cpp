@@ -87,7 +87,6 @@ vector<wstring> EseDbManager::GetTableNames()
 void EseDbManager::MoveFirstRecord()
 {
 	eseTable_->MoveFirstRecord();
-	return;
 }
 
 BOOL EseDbManager::MoveNextRecord()

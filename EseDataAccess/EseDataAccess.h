@@ -58,7 +58,6 @@ namespace EseDataAccess
 		void Init();
 		EseTable* OpenTable(const wstring tableName);
 		vector<wstring> GetTableNames();
-		uint GetTableCount();
 
 		const EseInstance* GetParent() const
 		{
@@ -102,7 +101,6 @@ namespace EseDataAccess
 		vector<EseColumn*> columns_;
 		EseColumn* RetrieveColumnDefinition(const JET_COLUMNLIST& columnList);
 		vector<char> RetrieveColumnData(uint columnIndex, uint itagSequence);
-		void AppendNullToEndOfData(void* pvData, uint dataSizeInByte);
 		DISALLOW_COPY_AND_ASSIGN(EseTable);
 	};
 
