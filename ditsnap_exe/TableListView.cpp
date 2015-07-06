@@ -29,7 +29,7 @@ LRESULT CTableListView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 LRESULT CTableListView::OnListDoubleClick(LPNMHDR pnmh)
 {
-	LPNMITEMACTIVATE pnmia = reinterpret_cast<LPNMITEMACTIVATE>(pnmh);
+	auto pnmia = reinterpret_cast<LPNMITEMACTIVATE>(pnmh);
 	if (pnmia->iItem < 0)
 	{
 		return 0;
@@ -73,10 +73,6 @@ void CTableListView::LoadTable()
 					if (numberOfColumnValue != itagSequence)
 					{
 						columnValues += L"; ";
-					}
-					else if (numberOfColumnValue > 1)
-					{
-						columnValues += L" (Multi-valued column)";
 					}
 				}
 				if (columnValues.empty())
@@ -144,7 +140,6 @@ void CTableListView::LoadDatatable()
 	{
 		MessageBoxA(nullptr, e.what(), "Ditsnap", MB_ICONWARNING | MB_OK);
 	}
-	return;
 }
 
 void CTableListView::FilterTable(int filterFlag)
@@ -154,6 +149,7 @@ void CTableListView::FilterTable(int filterFlag)
 	{
 		return;
 	}
+
 	DeleteAllItems();
 	listItemIdToEseRowIndex_.clear();
 	wchar_t* listHeaderColumnNames[] = {L"ATTm589825", L"DNT_col", L"PDNT_col", L"cnt_col",
@@ -161,7 +157,7 @@ void CTableListView::FilterTable(int filterFlag)
 	wstring classSchemaDnt;
 	wstring attributeSchemaDnt;
 	wstring subSchemaDnt;
-	wstring displaySpecifierDnt;
+	wstring displaySpecifierDnt;	
 	try
 	{
 		eseDbManager_->MoveFirstRecord();
@@ -227,11 +223,10 @@ void CTableListView::FilterTable(int filterFlag)
 	catch (runtime_error& e)
 	{
 		MessageBoxA(nullptr, e.what(), "Ditsnap", MB_ICONWARNING | MB_OK);
-		return;
 	}
 }
 
-const wstring CTableListView::GetAdNameFromColumnName(wstring columnName)
+wstring CTableListView::GetAdNameFromColumnName(wstring columnName)
 {
 	return adNameMap_[wstring(columnName)];
 }
@@ -274,13 +269,16 @@ void CTableListView::CleanupTable()
 
 void CTableListView::CleanupDetailDialog()
 {
-	if (nullptr != detailDialog_ && detailDialog_->IsWindow())
+	if (nullptr != detailDialog_)
 	{
-		detailDialog_->DestroyWindow();
+		if (detailDialog_->IsWindow())
+		{
+			detailDialog_->DestroyWindow();
+		}
+
+		delete detailDialog_;
+		detailDialog_ = nullptr;
 	}
-	delete detailDialog_;
-	detailDialog_ = nullptr;
-	return;
 }
 
 void CTableListView::InsertColumnHelper(int nCol, wchar_t* columnNameLikeATTxxxx, int nWidth)
@@ -295,14 +293,12 @@ void CTableListView::InsertColumnHelper(int nCol, wchar_t* columnNameLikeATTxxxx
 		columnName.Format(L"%s <%s>", columnNameLikeATTxxxx, adNameMap_[columnNameLikeATTxxxx].c_str());
 	}
 	InsertColumn(nCol, columnName, LVCFMT_LEFT, nWidth);
-	return;
 }
 
 void CTableListView::AddItemHelper(int nItem, int nSubItem, wchar_t* columnNameLikeATTxxxx)
 {
-	wstring s(eseDbManager_->RetrieveColumnDataAsString(columnMap_[columnNameLikeATTxxxx]));
+	wstring s = eseDbManager_->RetrieveColumnDataAsString(columnMap_[columnNameLikeATTxxxx]);
 	AddItem(nItem, nSubItem, s.c_str());
-	return;
 }
 
 bool CTableListView::MapColumnNameToColumnIndex(map<wstring, int>* pColumnMap)
@@ -317,7 +313,7 @@ bool CTableListView::MapColumnNameToColumnIndex(map<wstring, int>* pColumnMap)
 	}
 	catch (runtime_error& e)
 	{
-		MessageBoxA(NULL, e.what(), "Ditsnap", MB_ICONWARNING | MB_OK);
+		MessageBoxA(nullptr, e.what(), "Ditsnap", MB_ICONWARNING | MB_OK);
 		return FALSE;
 	}
 	return TRUE;

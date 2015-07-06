@@ -38,7 +38,7 @@ using std::vector;
 using std::list;
 using std::runtime_error;
 
-inline const wstring to_w(const char* s)
+inline wstring to_w(const char* s)
 {
 	string str(s);
 	wstring w;

@@ -29,7 +29,7 @@ public:
 		REFLECT_NOTIFICATIONS() // Message Reflection
 	END_MSG_MAP()
 
-	CMainFrame(EseDbManager* eseDbManager);
+	explicit CMainFrame(EseDbManager* eseDbManager);
 
 	LRESULT OnCreate(LPCREATESTRUCT lpcs);
 	void OnFileExit(UINT uCode, int nID, HWND hwndCtrl);

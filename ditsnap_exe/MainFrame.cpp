@@ -83,7 +83,7 @@ void CMainFrame::OnFileSnapshot(UINT uCode, int nID, HWND hwndCtrl)
 	CSnapshotWizard snapshotWizard;
 	if (snapshotWizard.DoModal() == IDOK)
 	{
-		wchar_t* snapshotFilePath = snapshotWizard.GetSnapshotFilePath();
+		auto snapshotFilePath = snapshotWizard.GetSnapshotFilePath();
 		if (nullptr != snapshotFilePath)
 		{
 			eseDbManager_->OpenFile(snapshotFilePath);

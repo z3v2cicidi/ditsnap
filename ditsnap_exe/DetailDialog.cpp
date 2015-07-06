@@ -18,10 +18,10 @@ CDetailDialog::~CDetailDialog()
 LRESULT CDetailDialog::OnInitDialog(HWND hWnd, LPARAM lParam)
 {
 	CenterWindow();
-	HICON hIcon = AtlLoadIconImage(IDR_MAINFRAME, LR_DEFAULTCOLOR,
+	auto hIcon = AtlLoadIconImage(IDR_MAINFRAME, LR_DEFAULTCOLOR,
 	                                            GetSystemMetrics(SM_CXICON), GetSystemMetrics(SM_CYICON));
 	SetIcon(hIcon, TRUE);
-	HICON hIconSmall = AtlLoadIconImage(IDR_MAINFRAME, LR_DEFAULTCOLOR,
+	auto hIconSmall = AtlLoadIconImage(IDR_MAINFRAME, LR_DEFAULTCOLOR,
 	                                                 GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON));
 	SetIcon(hIconSmall, FALSE);
 	detailListView_ = GetDlgItem(IDC_LIST1);
@@ -29,10 +29,10 @@ LRESULT CDetailDialog::OnInitDialog(HWND hWnd, LPARAM lParam)
 	detailListView_.SetExtendedListViewStyle(LVS_EX_INFOTIP | LVS_EX_FULLROWSELECT);
 	CRect rcList;
 	detailListView_.GetWindowRect(rcList);
-	int nScrollWidth = GetSystemMetrics(SM_CXVSCROLL);
-	int n3DEdge = GetSystemMetrics(SM_CXEDGE);
+	auto nScrollWidth = GetSystemMetrics(SM_CXVSCROLL);
+	auto n3DEdge = GetSystemMetrics(SM_CXEDGE);
 	detailListView_.InsertColumn(0, L"Column name", LVCFMT_LEFT, 100, -1);
-	detailListView_.InsertColumn(1, L"AD Simbol name", LVCFMT_LEFT, 200, -1);
+	detailListView_.InsertColumn(1, L"AD Symbol name", LVCFMT_LEFT, 200, -1);
 	detailListView_.InsertColumn(2, L"Value", LVCFMT_LEFT,
 	                             rcList.Width() - 300 - nScrollWidth - n3DEdge * 2, -1);
 	checkBox_.SetCheck(1);
@@ -59,25 +59,22 @@ void CDetailDialog::OnCancel(UINT uNotifyCode, int nID, CWindow wndCtl)
 void CDetailDialog::OnShowAllCheckBoxToggled(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	SetupListItems();
-	return;
 }
 
 void CDetailDialog::SetupTopLabel()
 {
-	// ATTm589825 indicates RDN.@
-	const int ATT_RDN = parent_->GetColumnIdFromColumnName(L"ATTm589825");
+	auto ATT_RDN = parent_->GetColumnIdFromColumnName(L"ATTm589825");
 	auto rdnLabel = GetDlgItem(IDC_RDN);
 
 	try
 	{
-		wstring rdn(eseDbManager_->RetrieveColumnDataAsString(ATT_RDN));
+		auto rdn = eseDbManager_->RetrieveColumnDataAsString(ATT_RDN);
 		rdnLabel.SetWindowTextW(rdn.c_str());
 	}
 	catch (runtime_error& e)
 	{
 		MessageBoxA(nullptr, e.what(), "Ditsnap", MB_ICONWARNING | MB_OK);
 	}
-	return;
 }
 
 void CDetailDialog::SetupListItems()
@@ -89,7 +86,7 @@ void CDetailDialog::SetupListItems()
 		{
 			for (uint columnIndex = 0; columnIndex < eseDbManager_->GetColumnCount(); ++columnIndex)
 			{
-				wstring columnValues = GetColumnValueString(columnIndex);
+				auto columnValues = GetColumnValueString(columnIndex);
 				wstring columnName(eseDbManager_->GetColumnName(columnIndex));
 				const wstring adName = parent_->GetAdNameFromColumnName(columnName);
 				detailListView_.AddItem(columnIndex, 0, columnName.c_str());
@@ -126,7 +123,6 @@ void CDetailDialog::SetupListItems()
 	{
 		MessageBoxA(nullptr, e.what(), "Ditsnap", MB_ICONWARNING | MB_OK);
 	}
-	return;
 }
 
 wstring CDetailDialog::GetColumnValueString(uint columnIndex)
@@ -178,9 +174,9 @@ LRESULT CDetailDialog::OnCopyAllButtonClicked(UINT uNotifyCode, int nID, CWindow
 		return -1;
 	}
 	int bufSize = (copyText.GetLength() + 1) * sizeof(wchar_t);
-	HGLOBAL hBuf = GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, bufSize);
-	wchar_t* pBuf = (wchar_t*) GlobalLock(hBuf);
-	memcpy(pBuf, (LPCTSTR) copyText, bufSize);
+	auto hBuf = GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, bufSize);
+	auto pBuf = static_cast<wchar_t*>(GlobalLock(hBuf));
+	memcpy(pBuf, static_cast<LPCTSTR>(copyText), bufSize);
 	GlobalUnlock(hBuf);
 
 	if (!EmptyClipboard())

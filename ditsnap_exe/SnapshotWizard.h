@@ -10,7 +10,7 @@ public:
 		IDD = IDD_SCWIZARD1
 	};
 
-	CSnapshotWizardPage1(_U_STRINGorID title = static_cast<LPCTSTR>(nullptr))
+	explicit CSnapshotWizardPage1(_U_STRINGorID title = static_cast<LPCTSTR>(nullptr))
 		: CPropertyPageImpl<CSnapshotWizardPage1>(title)
 	{
 	}
@@ -44,7 +44,7 @@ public:
 		IDD = IDD_SCWIZARD2
 	};
 
-	CSnapshotWizardPage2(_U_STRINGorID title = static_cast<LPCTSTR>(nullptr))
+	explicit CSnapshotWizardPage2(_U_STRINGorID title = static_cast<LPCTSTR>(nullptr))
 		: CPropertyPageImpl<CSnapshotWizardPage2>(title)
 	{
 	}

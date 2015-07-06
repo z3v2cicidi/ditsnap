@@ -19,7 +19,7 @@ BOOL CSnapshotWizardPage1::OnInitDialog(CWindow wndFocus, LPARAM lInitParam)
 		CPath tempPath(destinationPath);
 		tempPath.RemoveFileSpec();
 		tempPath.Append(L"\\ntdsSnapshot.dit");
-		destinationEdit_.SetWindowTextW((const wchar_t*) tempPath);
+		destinationEdit_.SetWindowTextW(static_cast<const wchar_t*>(tempPath));
 	}
 	return TRUE;
 }
@@ -28,10 +28,8 @@ LRESULT CSnapshotWizardPage1::OnWizardNext()
 {
 	CAutoPtr<wchar_t> sourcePath(new wchar_t[sourceEdit_.GetWindowTextLengthW() + 1]);
 	sourceEdit_.GetWindowTextW(sourcePath, sourceEdit_.GetWindowTextLengthW() + 1);
-
 	CAutoPtr<wchar_t> destinationPath(new wchar_t[destinationEdit_.GetWindowTextLengthW() + 1]);
 	destinationEdit_.GetWindowTextW(destinationPath, destinationEdit_.GetWindowTextLengthW() + 1);
-
 	wchar_t expandedSourcePath[MAX_PATH];
 	wchar_t expandedDestinationPath[MAX_PATH];
 	if (0 == ::ExpandEnvironmentStrings(sourcePath, expandedSourcePath, MAX_PATH))
@@ -39,6 +37,7 @@ LRESULT CSnapshotWizardPage1::OnWizardNext()
 		MessageBox(L"Bad source path format.", L"Error");
 		return -1;
 	}
+
 	if (0 == ::ExpandEnvironmentStrings(destinationPath, expandedDestinationPath, MAX_PATH))
 	{
 		MessageBox(L"Bad destination path format.", L"Error");
@@ -50,13 +49,14 @@ LRESULT CSnapshotWizardPage1::OnWizardNext()
 		MessageBox(L"The source file does not exists.", L"Error");
 		return -1;
 	}
+
 	if (ATLPath::FileExists(expandedDestinationPath))
 	{
 		MessageBox(L"The Destination file already exists.", L"Error");
 		return -1;
 	}
-	
-	HRESULT hr = Vss::CopyFileFromSnapshot(sourcePath, destinationPath);
+
+	auto hr = Vss::CopyFileFromSnapshot(sourcePath, destinationPath);
 	if (FAILED(hr))
 	{
 		CString errorMessage;
@@ -81,17 +81,14 @@ BOOL CSnapshotWizardPage1::InvokeEsentutilP(const wchar_t* targetDbPath)
 {
 	STARTUPINFO si;
 	PROCESS_INFORMATION pi;
-
 	ZeroMemory( &si, sizeof( si ) );
 	si.cb = sizeof( si );
 	ZeroMemory( &pi, sizeof( pi ) );
-
 	wchar_t* esentutilCommand = L"\"%systemroot%\\system32\\esentutl.exe\" /p /8 /o ";
 	wchar_t eseutilCommandWithDbPath[MAX_PATH * 2 + 4];
 	swprintf_s(eseutilCommandWithDbPath, MAX_PATH * 2 + 4, L"%s\"%s\"", esentutilCommand, targetDbPath);
 	wchar_t expandedCmdLine[MAX_PATH * 2 + 4];
 	::ExpandEnvironmentStrings(eseutilCommandWithDbPath, expandedCmdLine, MAX_PATH * 2 + 4);
-
 	if (!::CreateProcess(nullptr, expandedCmdLine, nullptr, nullptr, FALSE,
 	                         CREATE_NEW_CONSOLE, nullptr, nullptr, &si, &pi))
 	{

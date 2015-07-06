@@ -255,10 +255,10 @@ BEGIN
             VALUE "FileDescription", "DIT Snapshot Viewer"
             VALUE "FileVersion", "1, 3, 0, 2"
             VALUE "InternalName", "ditsnap"
-            VALUE "LegalCopyright", "Copyright 2008 yosukeoy"
+            VALUE "LegalCopyright", "Copyright 2008 yosuqueoy"
             VALUE "OriginalFilename", "ditsnap.exe"
             VALUE "ProductName", "DIT Snapshot Viewer"
-            VALUE "ProductVersion", "1, 3, 0, 2"
+            VALUE "ProductVersion", "1, 3, 0, 3"
         END
     END
     BLOCK "VarFileInfo"

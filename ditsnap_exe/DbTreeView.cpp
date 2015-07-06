@@ -49,12 +49,12 @@ void CDbTreeView::LoadEseDbManager()
 	images.CreateFromImage(IDB_BITMAP1, 16, 0,
 	                       RGB( 255, 0, 255 ), IMAGE_BITMAP, LR_CREATEDIBSECTION);
 	this->SetImageList(images);
-
 	auto hRootItem = InsertItem(eseDbManager_->GetFilePath().c_str(), 0, 0, TVI_ROOT, TVI_LAST);
 	if (hRootItem != nullptr)
 	{
 		SetItemData(hRootItem, reinterpret_cast<DWORD_PTR>(hRootItem));
 	}
+
 	try
 	{
 		auto tableNames = eseDbManager_->GetTableNames();

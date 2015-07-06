@@ -33,7 +33,7 @@ public:
 	void LoadTable();
 	void LoadDatatable();
 	void FilterTable(int filterFlag);
-	const wstring GetAdNameFromColumnName(wstring columnName);
+	wstring GetAdNameFromColumnName(wstring columnName);
 	int GetColumnIdFromColumnName(wstring columnName);
 	virtual void LoadEseTable() override;
 	virtual void LoadEseDbManager() override;
