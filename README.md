@@ -3,7 +3,7 @@ DIT Snapshot Viewer is an inspection tool for Active Directory database, ntds.di
 
 Additionally, the tool can extract ntds.dit file without stopping lsass.exe. When Active Directory Service is running, lsass.exe locks the file and does not allow to access to it. Snapshot wizard copies ntds.dit using VSS(Volume Shadow Copy Service) even if it is exclusively locked. As copying ntds.dit may cause inconsistency state in ESE DB, the wizard automatically runs __esentutil /repair__ command to fix the inconsistency.
 
-Filtering feature is available because datatable can have a huge number of records. You can filter out metadata like schema objects by Tools->Filter.
+Filtering feature is available as datatable can have a huge number of records. You can filter out metadata like schema objects by Tools->Filter.
 
 EseDataAccess static library can be used for other ESE inspection applications. It has C++ object-oriented representation of ESE C API. For example, ESE table is represented by EseTable class defined as below.
 ```C++
